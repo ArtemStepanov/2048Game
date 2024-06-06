@@ -95,7 +95,7 @@ public sealed class StorageServiceTests : IDisposable
 
         var loadedScoreBoard = JsonSerializer.Deserialize<ScoreBoard>(File.ReadAllText(_scoreBoardPath));
         Assert.NotNull(loadedScoreBoard);
-        Assert.Equal(0, loadedScoreBoard!.Score);
+        Assert.Equal(0, loadedScoreBoard.Score);
         Assert.Equal(scoreBoard.BestScore, loadedScoreBoard.BestScore);
     }
 }
