@@ -1,9 +1,7 @@
-name: Code Coverage
+name: Build and Test with Coverage
 
 on:
   push:
-    branches:
-      - main
   pull_request:
     branches:
       - main
@@ -35,7 +33,7 @@ jobs:
     - name: Build
       run: dotnet build --no-restore --configuration Release
 
-  test-and-coverage:
+  test:
     runs-on: ubuntu-latest
     needs: build
 
@@ -59,20 +57,56 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
 
-    - name: Run tests with coverage
-      run: dotnet test --configuration Release /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+    - name: Run tests
+      run: dotnet test --verbosity normal --configuration Release /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+
+    - name: Upload test results
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-results
+        path: .
+        retention-days: 5
+
+  test-and-coverage:
+    runs-on: ubuntu-latest
+    needs: test
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Download test results
+      uses: actions/download-artifact@v4
+      with:
+        name: test-results
+        path: ./
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ vars.DOTNET_VERSION }}
+
+    - name: Cache NuGet packages
+      uses: actions/cache@v4
+      with:
+        path: ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget-
 
     - name: Setup report generator
-      run: dotnet tool install --global dotnet-reportgenerator-globaltool
+      run: |
+        export PATH="$PATH:/home/runner/.dotnet/tools"
+        dotnet tool install --global dotnet-reportgenerator-globaltool
       env:
         DOTNET_ROOT: /usr/share/dotnet
-        PATH: $PATH:/home/runner/.dotnet/tools
 
     - name: Generate coverage report
-      run: reportgenerator -reports:tests/**/coverage.opencover.xml -targetdir:coverage -reporttypes:Html
+      run: |
+        export PATH="$PATH:/home/runner/.dotnet/tools"
+        reportgenerator -reports:tests/**/coverage.opencover.xml -targetdir:coverage -reporttypes:Html
       env:
         DOTNET_ROOT: /usr/share/dotnet
-        PATH: $PATH:/home/runner/.dotnet/tools
 
     - name: Upload coverage report
       uses: actions/upload-artifact@v4

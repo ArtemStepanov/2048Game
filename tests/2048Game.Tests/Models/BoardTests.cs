@@ -72,8 +72,7 @@ public sealed class BoardTests
     public void CanMove_Returns_True_If_Merge_Possible()
     {
         var board = new Board();
-        board.Reset(4);
-        board.RemoveTile(board.Tiles.First());
+        ClearTiles(board);
 
         var tile1 = new Tile(0, 0, 2);
         var tile2 = new Tile(0, 1, 2); // Create a mergeable tile
@@ -89,7 +88,8 @@ public sealed class BoardTests
     {
         var board = new Board();
 
-        board.Reset(board.Size);
+        ClearTiles(board);
+
         for (var row = 0; row < board.Size; row++)
         {
             for (var col = 0; col < board.Size; col++)
@@ -100,6 +100,18 @@ public sealed class BoardTests
         }
 
         Assert.False(board.CanMove());
+    }
+
+    private static void ClearTiles(Board board)
+    {
+        var tilesField = typeof(Board).GetField("_tiles", BindingFlags.NonPublic | BindingFlags.Instance);
+        if (tilesField == null)
+        {
+            return;
+        }
+
+        var tiles = (List<Tile>)tilesField.GetValue(board)!;
+        tiles.Clear();
     }
 
     private static void AddTileUsingReflection(Board board, Tile tile)
