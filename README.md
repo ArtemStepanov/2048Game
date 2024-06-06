@@ -2,6 +2,7 @@
 
 [![Build and Test](https://github.com/ArtemStepanov/2048Game/actions/workflows/dotnet-ci.yml/badge.svg)](https://github.com/ArtemStepanov/2048Game/actions/workflows/dotnet-ci.yml)
 [![CodeQL](https://github.com/ArtemStepanov/2048Game/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/ArtemStepanov/2048Game/actions/workflows/github-code-scanning/codeql)
+[![codecov](https://codecov.io/github/ArtemStepanov/2048Game/graph/badge.svg?token=SD342CTD6X)](https://codecov.io/github/ArtemStepanov/2048Game)
 
 This is a C# implementation of the popular 2048 game. The goal is to combine tiles with the same number to create a tile with the number 2048.
 
