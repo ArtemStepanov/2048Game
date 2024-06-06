@@ -20,6 +20,9 @@ profile:
 
 #Execute shell command before Qodana execution (Applied in CI/CD pipeline)
 #bootstrap: sh ./prepare-qodana.sh
+bootstrap: dotnet build, cd ./tests/2048Game.Tests && \\
+  dotnet add package coverlet.msbuild && \\
+  ((dotnet test /p:CollectCoverage=true /p:CoverletOutput=<your-project-folder>/.qodana/code-coverage /p:CoverletOutputFormat=lcov))
 
 #Install IDE plugins before Qodana execution (Applied in CI/CD pipeline)
 #plugins:
@@ -27,3 +30,4 @@ profile:
 
 #Specify Qodana linter for analysis (Applied in CI/CD pipeline)
 linter: jetbrains/qodana-dotnet:latest
+
