@@ -53,7 +53,7 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
 
-    - name: Install Coverlet and ReportGenerator global tools
+    - name: Install ReportGenerator global tools
       run: dotnet tool install --global dotnet-reportgenerator-globaltool
 
     - name: Add .NET tools to PATH

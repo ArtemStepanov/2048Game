@@ -15,10 +15,35 @@ jobs:
       pull-requests: write
       checks: write
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 0
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Add coverlet package
+        run: dotnet add package --project=tests/2048Game.Tests/2048Game.Tests.csproj coverlet.msbuild
+
+      - name: Run tests with coverage
+        run: dotnet test --no-restore --configuration Release /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=./coverage/
+
+      - name: Archive coverage data
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverlet-coverage-data
+          path: tests/2048Game.Tests/coverage/code-coverage
+
       - name: 'Qodana Scan'
         uses: JetBrains/qodana-action@v2024.1
         with:
