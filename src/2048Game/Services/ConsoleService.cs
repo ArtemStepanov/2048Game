@@ -1,7 +1,9 @@
 ﻿using _2048Game.Services.Abstractions;
+using System.Diagnostics.CodeAnalysis;
 
 namespace _2048Game.Services;
 
+[ExcludeFromCodeCoverage]
 public sealed class ConsoleService : IConsoleService
 {
     public int CursorTop => Console.CursorTop;
