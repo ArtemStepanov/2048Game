@@ -599,26 +599,26 @@ FNH:7
 end_of_record
 SF:/data/project/src/2048Game/Models/Board.cs
 FN:28,System.Collections.Generic.IReadOnlyCollection`1<_2048Game.Models.Tile> _2048Game.Models.Board::get_Tiles()
-FNDA:115,System.Collections.Generic.IReadOnlyCollection`1<_2048Game.Models.Tile> _2048Game.Models.Board::get_Tiles()
-DA:29,115
+FNDA:117,System.Collections.Generic.IReadOnlyCollection`1<_2048Game.Models.Tile> _2048Game.Models.Board::get_Tiles()
+DA:29,117
 FN:30,System.Int32 _2048Game.Models.Board::get_Size()
-FNDA:127,System.Int32 _2048Game.Models.Board::get_Size()
-DA:31,127
+FNDA:131,System.Int32 _2048Game.Models.Board::get_Size()
+DA:31,131
 FN:33,System.Void _2048Game.Models.Board::AddRandomTile()
 FNDA:34,System.Void _2048Game.Models.Board::AddRandomTile()
 DA:34,34
-DA:37,35
-DA:38,35
-DA:39,35
-DA:40,91
+DA:37,37
+DA:38,37
+DA:39,37
+DA:40,97
 DA:42,34
 DA:43,34
-BRDA:40,99,1,35
-BRDA:40,68,0,40
-BRDA:40,68,1,50
+BRDA:40,99,1,37
+BRDA:40,68,0,43
+BRDA:40,68,1,51
 BRDA:40,99,0,34
-BRDA:42,139,0,6
-BRDA:42,139,1,28
+BRDA:42,139,0,3
+BRDA:42,139,1,31
 FN:45,System.Void _2048Game.Models.Board::RemoveTile(_2048Game.Models.Tile)
 FNDA:1,System.Void _2048Game.Models.Board::RemoveTile(_2048Game.Models.Tile)
 DA:46,1
@@ -741,11 +741,11 @@ FNH:4
 end_of_record
 SF:/data/project/src/2048Game/Models/Tile.cs
 FN:7,System.Int32 _2048Game.Models.Tile::get_Row()
-FNDA:1693,System.Int32 _2048Game.Models.Tile::get_Row()
-DA:8,1693
+FNDA:1695,System.Int32 _2048Game.Models.Tile::get_Row()
+DA:8,1695
 FN:8,System.Int32 _2048Game.Models.Tile::get_Column()
-FNDA:612,System.Int32 _2048Game.Models.Tile::get_Column()
-DA:9,612
+FNDA:615,System.Int32 _2048Game.Models.Tile::get_Column()
+DA:9,615
 FN:9,System.Int32 _2048Game.Models.Tile::get_Value()
 FNDA:334,System.Int32 _2048Game.Models.Tile::get_Value()
 DA:10,334
