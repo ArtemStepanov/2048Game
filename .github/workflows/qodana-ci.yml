@@ -36,13 +36,13 @@ jobs:
         run: dotnet add tests/2048Game.Tests/2048Game.Tests.csproj package coverlet.msbuild
 
       - name: Run tests with coverage
-        run: dotnet test --no-restore --configuration Release /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=./coverage/
+        run: dotnet test /p:CollectCoverage=true /p:CoverletOutput=../../.qodana/code-coverage /p:CoverletOutputFormat=lcov
 
       - name: Archive coverage data
         uses: actions/upload-artifact@v4
         with:
           name: coverlet-coverage-data
-          path: tests/2048Game.Tests/coverage/code-coverage
+          path: .qodana/code-coverage
 
       - name: 'Qodana Scan'
         uses: JetBrains/qodana-action@v2024.1
