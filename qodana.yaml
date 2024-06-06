@@ -4,19 +4,9 @@
 #-------------------------------------------------------------------------------#
 version: "1.0"
 
-dotnet:
-  solution: 2048Game.sln
-
 #Specify inspection profile for code analysis
 profile:
-  name: qodana.starter 
-
-# bootstrap: |
-#   dotnet build
-#   cd tests/2048Game.Tests
-#   pwd
-#   dotnet add package coverlet.msbuild
-#   dotnet test /p:CollectCoverage=true /p:CoverletOutput=../../.qodana/code-coverage /p:CoverletOutputFormat=lcov
+  name: qodana.recommended 
 
 #Install IDE plugins before Qodana execution (Applied in CI/CD pipeline)
 plugins:

@@ -53,37 +53,20 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
 
-    - name: Run tests
-      run: dotnet test --no-restore --configuration Release /p:CollectCoverage=true /p:CoverletOutput=../../.qodana/code-coverage /p:CoverletOutputFormat=lcov
+    - name: Install Coverlet and ReportGenerator global tools
+      run: dotnet tool install --global dotnet-reportgenerator-globaltool
 
-    - name: Upload coverage
-      uses: actions/upload-artifact@v3
+    - name: Add .NET tools to PATH
+      run: echo "::add-path::${HOME}/.dotnet/tools"
+
+    - name: Run tests with coverage
+      run: dotnet test --no-restore --configuration Release /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=./coverage/
+
+    - name: Generate coverage report
+      run: reportgenerator -reports:./coverage/coverage.cobertura.xml -targetdir:./coverage/report -reporttypes:Html
+
+    - name: Upload coverage report
+      uses: actions/upload-artifact@v4
       with:
-        name: coverage
-        path: .qodana/
-
-  qodana:
-    needs: test
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pull-requests: write
-      checks: write
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
-          fetch-depth: 0
-      - name: Download coverage
-        uses: actions/download-artifact@v3
-        with:
-          name: coverage
-          path: .qodana/
-      - name: Qodana Scan
-        uses: JetBrains/qodana-action@v2024.1
-        with:
-          pr-mode: false
-          push-fixes: pull-request
-          args: --apply-fixes
-        env:
-          QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
+        name: code-coverage-report
+        path: ./coverage/report
