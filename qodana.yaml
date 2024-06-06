@@ -6,7 +6,7 @@ version: "1.0"
 
 #Specify inspection profile for code analysis
 profile:
-  name: qodana.starter
+  name: qodana.recommended
 
 #Enable inspections
 #include:
@@ -22,7 +22,7 @@ profile:
 #bootstrap: sh ./prepare-qodana.sh
 bootstrap: dotnet build, cd ./tests/2048Game.Tests && \\
   dotnet add package coverlet.msbuild && \\
-  ((dotnet test /p:CollectCoverage=true /p:CoverletOutput=<your-project-folder>/.qodana/code-coverage /p:CoverletOutputFormat=lcov))
+  ((dotnet test /p:CollectCoverage=true /p:CoverletOutput=./.qodana/code-coverage /p:CoverletOutputFormat=lcov))
 
 #Install IDE plugins before Qodana execution (Applied in CI/CD pipeline)
 #plugins:
@@ -31,3 +31,4 @@ bootstrap: dotnet build, cd ./tests/2048Game.Tests && \\
 #Specify Qodana linter for analysis (Applied in CI/CD pipeline)
 linter: jetbrains/qodana-dotnet:latest
 
+fixesStrategy: apply
