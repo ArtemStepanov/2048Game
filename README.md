@@ -1,7 +1,7 @@
 # 2048 Game
 
 [![Build and Test](https://github.com/ArtemStepanov/2048Game/actions/workflows/dotnet-ci.yml/badge.svg)](https://github.com/ArtemStepanov/2048Game/actions/workflows/dotnet-ci.yml)
-[![Qodana](https://github.com/ArtemStepanov/2048Game/actions/workflows/qodana_code_quality.yml/badge.svg)](https://github.com/ArtemStepanov/2048Game/actions/workflows/qodana_code_quality.yml)
+[![Qodana](https://github.com/ArtemStepanov/2048Game/actions/workflows/qodana.yml/badge.svg)](https://github.com/ArtemStepanov/2048Game/actions/workflows/qodana.yml)
 
 This is a C# implementation of the popular 2048 game. The goal is to combine tiles with the same number to create a tile with the number 2048.
 

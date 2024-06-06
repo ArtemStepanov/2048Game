@@ -12,7 +12,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Files", "Solution 
 		.gitignore = .gitignore
 		README.md = README.md
 		.github\workflows\dotnet-ci.yml = .github\workflows\dotnet-ci.yml
-		.github\workflows\qodana_code_quality.yml = .github\workflows\qodana_code_quality.yml
+		.github\workflows\qodana.yml = .github\workflows\qodana.yml
 	EndProjectSection
 EndProject
 Global

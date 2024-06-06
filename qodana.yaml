@@ -32,5 +32,3 @@ bootstrap: |
 
 #Specify Qodana linter for analysis (Applied in CI/CD pipeline)
 linter: jetbrains/qodana-dotnet:latest
-
-fixesStrategy: apply
