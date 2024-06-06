@@ -53,6 +53,9 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
 
+    - name: Add coverlet package
+      run: dotnet add tests/2048Game.Tests/2048Game.Tests.csproj package coverlet.msbuild
+
     - name: Install ReportGenerator global tools
       run: dotnet tool install --global dotnet-reportgenerator-globaltool
 
@@ -60,7 +63,7 @@ jobs:
       run: echo "${HOME}/.dotnet/tools" >> $GITHUB_PATH
 
     - name: Run tests with coverage
-      run: dotnet test --no-restore --configuration Release /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=./coverage/
+      run: dotnet test --no-restore --configuration Release --verbosity=normal /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=./coverage/
 
     - name: Generate coverage report
       run: reportgenerator -reports:tests/2048Game.Tests/coverage/coverage.cobertura.xml -targetdir:./coverage/report -reporttypes:Html

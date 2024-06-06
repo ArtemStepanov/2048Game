@@ -33,7 +33,7 @@ jobs:
         run: dotnet restore
 
       - name: Add coverlet package
-        run: dotnet add package --project=tests/2048Game.Tests/2048Game.Tests.csproj coverlet.msbuild
+        run: dotnet add tests/2048Game.Tests/2048Game.Tests.csproj package coverlet.msbuild
 
       - name: Run tests with coverage
         run: dotnet test --no-restore --configuration Release /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=./coverage/
