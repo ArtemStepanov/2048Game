@@ -54,13 +54,13 @@ jobs:
       run: dotnet restore
 
     - name: Run tests
-      run: dotnet test --no-restore --configuration Release /p:CollectCoverage=true /p:CoverletOutput=.qodana/code-coverage /p:CoverletOutputFormat=lcov
+      run: dotnet test --no-restore --configuration Release /p:CollectCoverage=true /p:CoverletOutput=/.qodana/code-coverage /p:CoverletOutputFormat=lcov
 
     - name: Upload coverage
       uses: actions/upload-artifact@v3
       with:
         name: coverage
-        path: .qodana/
+        path: /.qodana/
 
   qodana:
     needs: test
