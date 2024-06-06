@@ -60,13 +60,19 @@ jobs:
       run: dotnet restore
 
     - name: Run tests with coverage
-      run: dotnet test --no-build --configuration Release /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+      run: dotnet test --configuration Release /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
 
     - name: Setup report generator
       run: dotnet tool install --global dotnet-reportgenerator-globaltool
+      env:
+        DOTNET_ROOT: /usr/share/dotnet
+        PATH: $PATH:/home/runner/.dotnet/tools
 
     - name: Generate coverage report
       run: reportgenerator -reports:tests/**/coverage.opencover.xml -targetdir:coverage -reporttypes:Html
+      env:
+        DOTNET_ROOT: /usr/share/dotnet
+        PATH: $PATH:/home/runner/.dotnet/tools
 
     - name: Upload coverage report
       uses: actions/upload-artifact@v4
