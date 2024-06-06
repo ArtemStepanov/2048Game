@@ -1,0 +1,122 @@
+name: Build and Test
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ vars.DOTNET_VERSION }}
+
+    - name: Cache NuGet packages
+      uses: actions/cache@v4
+      with:
+        path: ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget-
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Build
+      run: dotnet build --no-restore --configuration Release
+
+  test:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Cache NuGet packages
+      uses: actions/cache@v4
+      with:
+        path: ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget-
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Add coverlet package
+      run: dotnet add tests/2048Game.Tests/2048Game.Tests.csproj package coverlet.msbuild
+
+    - name: Run tests with coverage
+      run: dotnet test --no-restore --configuration Release --verbosity=normal /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=./coverage/
+
+    - name: Upload coverage report
+      uses: actions/upload-artifact@v4
+      with:
+        name: code-coverage-report
+        path: tests/2048Game.Tests/coverage
+        retention-days: 5
+
+    - name: Upload coverage reports to Codecov
+      uses: codecov/codecov-action@v4
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        files: ./coverage/coverage.cobertura.xml
+        flags: unittests
+        name: codecov-umbrella
+
+  coverage-report-html:
+    runs-on: ubuntu-latest
+    needs: test
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+
+    steps:
+    - name: Install ReportGenerator global tools
+      run: dotnet tool install --global dotnet-reportgenerator-globaltool
+
+    - name: Add .NET tools to PATH
+      run: echo "${HOME}/.dotnet/tools" >> $GITHUB_PATH
+
+    - name: Download coverage report
+      uses: actions/download-artifact@v4
+      with:
+        name: code-coverage-report
+        path: coverage
+
+    - name: Generate coverage report
+      run: reportgenerator -reports:coverage/coverage.cobertura.xml -targetdir:./coverage/report -reporttypes:Html
+
+    - name: Upload html report
+      uses: actions/upload-artifact@v4
+      with:
+        name: coverage-report
+        path: coverage/report
+        retention-days: 5
+
+  deploy-coverage-report:
+    runs-on: ubuntu-latest
+    needs: coverage-report-html
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+
+    steps:
+    - name: Download coverage report
+      uses: actions/download-artifact@v4
+      with:
+        name: coverage-report
+        path: coverage/report
+
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v4
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./coverage/report
+        destination_dir: coverage
