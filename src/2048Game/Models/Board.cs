@@ -61,30 +61,16 @@ public sealed class Board : IBoard
 
     private bool VerifyTileIsMergeable(Tile tile)
     {
-        // Check if we can merge with the tile above
-        var upTile = Tiles.FirstOrDefault(t => t.Row == tile.Row - 1 && t.Column == tile.Column);
-        if (upTile is not null && upTile.Value == tile.Value)
-        {
-            return true;
-        }
+        return CanMergeWith(tile, tile.Row - 1, tile.Column) || // Validate tile above
+               CanMergeWith(tile, tile.Row + 1, tile.Column) || // Validate tile below
+               CanMergeWith(tile, tile.Row, tile.Column - 1) || // Validate tile to the left
+               CanMergeWith(tile, tile.Row, tile.Column + 1); // Validate tile to the right
+    }
 
-        // Check if we can merge with the tile below
-        var downTile = Tiles.FirstOrDefault(t => t.Row == tile.Row + 1 && t.Column == tile.Column);
-        if (downTile is not null && downTile.Value == tile.Value)
-        {
-            return true;
-        }
-
-        // Check if we can merge with the tile to the left
-        var leftTile = Tiles.FirstOrDefault(t => t.Row == tile.Row && t.Column == tile.Column - 1);
-        if (leftTile is not null && leftTile.Value == tile.Value)
-        {
-            return true;
-        }
-
-        // Check if we can merge with the tile to the right
-        var rightTile = Tiles.FirstOrDefault(t => t.Row == tile.Row && t.Column == tile.Column + 1);
-        return rightTile is not null && rightTile.Value == tile.Value;
+    private bool CanMergeWith(Tile tile, int targetRow, int targetColumn)
+    {
+        var targetTile = Tiles.FirstOrDefault(t => t.Row == targetRow && t.Column == targetColumn);
+        return targetTile is not null && targetTile.Value == tile.Value;
     }
 
     private void Initialize()
