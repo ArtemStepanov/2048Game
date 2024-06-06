@@ -4,22 +4,13 @@
 #-------------------------------------------------------------------------------#
 version: "1.0"
 
+dotnet:
+  solution: 2048Game.sln
+
 #Specify inspection profile for code analysis
 profile:
-  name: qodana.recommended
+  name: qodana.starter 
 
-#Enable inspections
-#include:
-#  - name: <SomeEnabledInspectionId>
-
-#Disable inspections
-#exclude:
-#  - name: <SomeDisabledInspectionId>
-#    paths:
-#      - <path/where/not/run/inspection>
-
-#Execute shell command before Qodana execution (Applied in CI/CD pipeline)
-#bootstrap: sh ./prepare-qodana.sh
 bootstrap: |
   dotnet build
   cd ./tests/2048Game.Tests
