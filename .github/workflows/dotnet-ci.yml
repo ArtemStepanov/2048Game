@@ -41,11 +41,6 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: ${{ vars.DOTNET_VERSION }}
-
     - name: Cache NuGet packages
       uses: actions/cache@v4
       with:
@@ -72,27 +67,11 @@ jobs:
     needs: test
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-
     - name: Download test results
       uses: actions/download-artifact@v4
       with:
         name: test-results
-        path: ./
-
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: ${{ vars.DOTNET_VERSION }}
-
-    - name: Cache NuGet packages
-      uses: actions/cache@v4
-      with:
-        path: ~/.nuget/packages
-        key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
-        restore-keys: |
-          ${{ runner.os }}-nuget-
+        path: .
 
     - name: Setup report generator
       run: |
