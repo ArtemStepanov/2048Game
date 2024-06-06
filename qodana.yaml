@@ -11,16 +11,18 @@ dotnet:
 profile:
   name: qodana.starter 
 
-bootstrap: |
-  dotnet build
-  cd tests/2048Game.Tests
-  pwd
-  dotnet add package coverlet.msbuild
-  dotnet test /p:CollectCoverage=true /p:CoverletOutput=../../.qodana/code-coverage /p:CoverletOutputFormat=lcov
+# bootstrap: |
+#   dotnet build
+#   cd tests/2048Game.Tests
+#   pwd
+#   dotnet add package coverlet.msbuild
+#   dotnet test /p:CollectCoverage=true /p:CoverletOutput=../../.qodana/code-coverage /p:CoverletOutputFormat=lcov
 
 #Install IDE plugins before Qodana execution (Applied in CI/CD pipeline)
-#plugins:
-#  - id: <plugin.id> #(plugin id can be found at https://plugins.jetbrains.com)
+plugins:
+ - id: cognitivecomplexity-rider
 
 #Specify Qodana linter for analysis (Applied in CI/CD pipeline)
 linter: jetbrains/qodana-dotnet:latest
+include:
+  - name: CognitiveComplexity
