@@ -63,6 +63,7 @@ jobs:
         path: .qodana/
 
   qodana:
+    needs: test
     runs-on: ubuntu-latest
     permissions:
       contents: write
