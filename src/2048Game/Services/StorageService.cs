@@ -63,11 +63,7 @@ public sealed class StorageService : IStorageService
         }
 
         // Reset score, but not the record score, in the saved file
-        var scoreBoard = ReadJsonFile<ScoreBoard>(_scoreBoardPath);
-        if (scoreBoard is null)
-        {
-            return;
-        }
+        var scoreBoard = ReadJsonFile<ScoreBoard>(_scoreBoardPath)!;
 
         scoreBoard.Reset();
         File.WriteAllText(_scoreBoardPath, JsonSerializer.Serialize(scoreBoard));

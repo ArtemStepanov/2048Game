@@ -14,25 +14,24 @@ public sealed class StorageServiceTests : IDisposable
 
     public StorageServiceTests()
     {
-        _tempAppDataPath = Path.Combine(Path.GetTempPath(), "_2048Game");
+        _tempAppDataPath = Path.Combine(Path.GetTempPath(), "2048Game");
         _saveFilePath = Path.Combine(_tempAppDataPath, "savegame.json");
         _scoreBoardPath = Path.Combine(_tempAppDataPath, "scoreboard.json");
-
-        // Ensure the test uses the temp directory
-        if (!Directory.Exists(_tempAppDataPath))
-        {
-            Directory.CreateDirectory(_tempAppDataPath);
-        }
-
         _storageService = new StorageService(_tempAppDataPath);
     }
 
-    public void Dispose()
+    [Fact]
+    public void Constructor_Creates_AppData_Directory()
     {
-        if (Directory.Exists(_tempAppDataPath))
-        {
-            Directory.Delete(_tempAppDataPath, true);
-        }
+        Assert.True(Directory.Exists(_tempAppDataPath));
+    }
+
+    [Fact]
+    public void Constructor_If_Empty_AppDataPath_Then_AppData_Is_Used()
+    {
+        var appDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "2048Game");
+        _ = new StorageService(string.Empty);
+        Assert.True(Directory.Exists(appDataPath));
     }
 
     [Fact]
@@ -97,5 +96,25 @@ public sealed class StorageServiceTests : IDisposable
         Assert.NotNull(loadedScoreBoard);
         Assert.Equal(0, loadedScoreBoard.Score);
         Assert.Equal(scoreBoard.BestScore, loadedScoreBoard.BestScore);
+    }
+
+    [Fact]
+    public void ResetGameSave_If_ScoreBoard_NotExist_Returns()
+    {
+        File.WriteAllText(_saveFilePath, JsonSerializer.Serialize(new Board()));
+        File.Delete(_scoreBoardPath);
+
+        _storageService.ResetGameSave();
+
+        Assert.False(File.Exists(_saveFilePath));
+        Assert.False(File.Exists(_scoreBoardPath));
+    }
+
+    public void Dispose()
+    {
+        if (Directory.Exists(_tempAppDataPath))
+        {
+            Directory.Delete(_tempAppDataPath, true);
+        }
     }
 }
