@@ -1,0 +1,706 @@
+SF:/home/runner/work/2048Game/2048Game/src/2048Game/Program.cs
+FN:6,System.Void Program::<Main>$(System.String[])
+FNDA:0,System.Void Program::<Main>$(System.String[])
+DA:7,0
+DA:9,0
+DA:11,0
+DA:13,0
+DA:14,0
+DA:16,0
+DA:17,0
+DA:18,0
+DA:20,0
+DA:23,0
+BRDA:18,59,1,0
+BRDA:18,59,0,0
+FN:26,System.Void Program::<<Main>$>g__ConfigureServices|0_0(Program/<>c__DisplayClass0_0&)
+FNDA:0,System.Void Program::<<Main>$>g__ConfigureServices|0_0(Program/<>c__DisplayClass0_0&)
+DA:27,0
+DA:28,0
+DA:29,0
+DA:30,0
+DA:31,0
+DA:32,0
+DA:34,0
+DA:35,0
+DA:36,0
+DA:37,0
+DA:38,0
+DA:39,0
+DA:40,0
+BRDA:35,17,0,0
+BRDA:35,17,1,0
+BRDA:38,17,0,0
+BRDA:38,17,1,0
+LF:23
+LH:0
+BRF:6
+BRH:0
+FNF:2
+FNH:0
+end_of_record
+SF:/home/runner/work/2048Game/2048Game/src/2048Game/Services/ConsoleService.cs
+FN:6,System.Int32 _2048Game.Services.ConsoleService::get_CursorTop()
+FNDA:0,System.Int32 _2048Game.Services.ConsoleService::get_CursorTop()
+DA:7,0
+FN:7,System.Int32 _2048Game.Services.ConsoleService::get_WindowWidth()
+FNDA:0,System.Int32 _2048Game.Services.ConsoleService::get_WindowWidth()
+DA:8,0
+FN:11,System.Void _2048Game.Services.ConsoleService::set_BackgroundColor(System.ConsoleColor)
+FNDA:0,System.Void _2048Game.Services.ConsoleService::set_BackgroundColor(System.ConsoleColor)
+DA:12,0
+FN:16,System.Void _2048Game.Services.ConsoleService::set_ForegroundColor(System.ConsoleColor)
+FNDA:0,System.Void _2048Game.Services.ConsoleService::set_ForegroundColor(System.ConsoleColor)
+DA:17,0
+FN:21,System.ConsoleKeyInfo _2048Game.Services.ConsoleService::ReadKey(System.Boolean)
+FNDA:0,System.ConsoleKeyInfo _2048Game.Services.ConsoleService::ReadKey(System.Boolean)
+DA:22,0
+FN:26,System.Void _2048Game.Services.ConsoleService::WriteLine(System.String)
+FNDA:0,System.Void _2048Game.Services.ConsoleService::WriteLine(System.String)
+DA:27,0
+DA:28,0
+FN:31,System.Void _2048Game.Services.ConsoleService::Clear()
+FNDA:0,System.Void _2048Game.Services.ConsoleService::Clear()
+DA:32,0
+DA:33,0
+FN:36,System.Void _2048Game.Services.ConsoleService::SetCursorPosition(System.Int32,System.Int32)
+FNDA:0,System.Void _2048Game.Services.ConsoleService::SetCursorPosition(System.Int32,System.Int32)
+DA:37,0
+DA:38,0
+FN:41,System.Void _2048Game.Services.ConsoleService::Write(System.String)
+FNDA:0,System.Void _2048Game.Services.ConsoleService::Write(System.String)
+DA:42,0
+DA:43,0
+FN:46,System.Void _2048Game.Services.ConsoleService::ResetColor()
+FNDA:0,System.Void _2048Game.Services.ConsoleService::ResetColor()
+DA:47,0
+DA:48,0
+LF:15
+LH:0
+BRF:0
+BRH:0
+FNF:10
+FNH:0
+end_of_record
+SF:/home/runner/work/2048Game/2048Game/src/2048Game/Services/GameService.cs
+FN:18,System.Void _2048Game.Services.GameService::StartGame()
+FNDA:1,System.Void _2048Game.Services.GameService::StartGame()
+DA:19,1
+DA:20,1
+FN:23,System.Void _2048Game.Services.GameService::ProcessStep(System.Nullable`1<_2048Game.Core.Direction>)
+FNDA:3,System.Void _2048Game.Services.GameService::ProcessStep(System.Nullable`1<_2048Game.Core.Direction>)
+DA:24,3
+DA:26,3
+DA:28,2
+DA:31,3
+DA:34,1
+DA:35,1
+DA:37,2
+DA:39,1
+DA:44,2
+DA:46,2
+BRDA:26,9,0,2
+BRDA:26,9,1,3
+BRDA:31,31,0,1
+BRDA:31,31,1,2
+BRDA:37,52,0,1
+BRDA:37,52,1,2
+FN:71,System.Void _2048Game.Services.GameService::StartNewGame()
+FNDA:1,System.Void _2048Game.Services.GameService::StartNewGame()
+DA:72,1
+DA:73,1
+DA:74,1
+DA:75,1
+DA:76,1
+FN:79,System.Void _2048Game.Services.GameService::SaveGame()
+FNDA:3,System.Void _2048Game.Services.GameService::SaveGame()
+DA:80,3
+DA:81,3
+FN:49,System.Void _2048Game.Services.GameService::<ProcessStep>g__HandleMove|7_0()
+FNDA:1,System.Void _2048Game.Services.GameService::<ProcessStep>g__HandleMove|7_0()
+DA:50,1
+DA:51,1
+DA:52,1
+DA:53,1
+FN:56,System.Void _2048Game.Services.GameService::<ProcessStep>g__HandleGameOver|7_1()
+FNDA:1,System.Void _2048Game.Services.GameService::<ProcessStep>g__HandleGameOver|7_1()
+DA:57,1
+DA:58,1
+DA:60,0
+DA:61,0
+DA:65,1
+DA:66,1
+BRDA:58,27,0,0
+BRDA:58,27,1,1
+FN:8,System.Void _2048Game.Services.GameService::.ctor(_2048Game.Models.Abstractions.IBoard,_2048Game.Models.ScoreBoard,_2048Game.Services.Abstractions.ITileControlService,_2048Game.Services.Abstractions.IStorageService,_2048Game.Services.Abstractions.IRenderService)
+FNDA:6,System.Void _2048Game.Services.GameService::.ctor(_2048Game.Models.Abstractions.IBoard,_2048Game.Models.ScoreBoard,_2048Game.Services.Abstractions.ITileControlService,_2048Game.Services.Abstractions.IStorageService,_2048Game.Services.Abstractions.IRenderService)
+DA:9,6
+DA:10,6
+DA:11,6
+DA:12,6
+DA:13,6
+DA:14,6
+DA:15,6
+LF:36
+LH:34
+BRF:8
+BRH:7
+FNF:7
+FNH:7
+end_of_record
+SF:/home/runner/work/2048Game/2048Game/src/2048Game/Services/InputService.cs
+FN:12,System.Boolean _2048Game.Services.InputService::HandleInput()
+FNDA:7,System.Boolean _2048Game.Services.InputService::HandleInput()
+DA:13,7
+DA:14,7
+DA:15,6
+DA:17,1
+DA:19,1
+DA:20,1
+DA:22,7
+FN:31,System.Void _2048Game.Services.InputService::HandleInput(System.ConsoleKey)
+FNDA:4,System.Void _2048Game.Services.InputService::HandleInput(System.ConsoleKey)
+DA:32,4
+DA:33,4
+DA:36,1
+DA:38,1
+DA:41,1
+DA:44,1
+DA:46,1
+DA:47,1
+DA:53,1
+DA:56,1
+BRDA:32,5,0,3
+BRDA:32,10,0,2
+BRDA:32,5,1,4
+BRDA:32,15,1,1
+BRDA:36,63,0,1
+BRDA:32,10,1,1
+BRDA:44,93,0,1
+BRDA:32,15,0,1
+BRDA:36,63,1,1
+BRDA:44,93,1,1
+FN:6,System.Void _2048Game.Services.InputService::.ctor(_2048Game.Services.Abstractions.IGameService,_2048Game.Services.Abstractions.IRenderService,_2048Game.Services.Abstractions.IConsoleService)
+FNDA:7,System.Void _2048Game.Services.InputService::.ctor(_2048Game.Services.Abstractions.IGameService,_2048Game.Services.Abstractions.IRenderService,_2048Game.Services.Abstractions.IConsoleService)
+DA:7,7
+LF:18
+LH:18
+BRF:10
+BRH:10
+FNF:3
+FNH:3
+end_of_record
+SF:/home/runner/work/2048Game/2048Game/src/2048Game/Services/RenderService.cs
+FN:12,System.Void _2048Game.Services.RenderService::RenderBoard()
+FNDA:1,System.Void _2048Game.Services.RenderService::RenderBoard()
+DA:13,1
+DA:14,1
+DA:15,1
+DA:16,1
+DA:18,10
+DA:20,40
+DA:22,74
+DA:23,16
+DA:26,4
+DA:27,4
+DA:29,1
+BRDA:18,355,1,4
+BRDA:20,269,1,16
+BRDA:20,269,0,4
+BRDA:18,355,0,1
+BRDA:22,17,0,16
+BRDA:22,17,1,42
+FN:32,System.Void _2048Game.Services.RenderService::RenderGameOver()
+FNDA:1,System.Void _2048Game.Services.RenderService::RenderGameOver()
+DA:33,1
+DA:34,1
+FN:37,System.Boolean _2048Game.Services.RenderService::ConfirmAction(System.String)
+FNDA:2,System.Boolean _2048Game.Services.RenderService::ConfirmAction(System.String)
+DA:38,2
+DA:40,2
+DA:41,4
+DA:43,2
+DA:47,2
+DA:48,2
+DA:49,2
+DA:51,2
+BRDA:41,69,1,2
+BRDA:41,50,0,4
+BRDA:41,55,0,3
+BRDA:41,50,1,2
+BRDA:41,55,1,2
+BRDA:41,60,0,2
+BRDA:41,60,1,2
+BRDA:41,69,0,2
+BRDA:51,149,0,2
+BRDA:51,149,1,1
+BRDA:51,154,0,1
+BRDA:51,154,1,1
+FN:55,System.Void _2048Game.Services.RenderService::PrintTile(_2048Game.Models.Tile)
+FNDA:16,System.Void _2048Game.Services.RenderService::PrintTile(_2048Game.Models.Tile)
+DA:56,16
+DA:58,12
+DA:59,12
+DA:62,4
+DA:63,4
+DA:65,4
+DA:66,4
+DA:67,4
+DA:68,4
+DA:69,4
+DA:70,4
+BRDA:56,1,0,12
+BRDA:56,1,1,4
+BRDA:68,112,0,0
+BRDA:68,112,1,4
+FN:6,System.Void _2048Game.Services.RenderService::.ctor(_2048Game.Models.Abstractions.IBoard,_2048Game.Models.ScoreBoard,_2048Game.Services.Abstractions.IConsoleService)
+FNDA:4,System.Void _2048Game.Services.RenderService::.ctor(_2048Game.Models.Abstractions.IBoard,_2048Game.Models.ScoreBoard,_2048Game.Services.Abstractions.IConsoleService)
+DA:7,4
+LF:33
+LH:33
+BRF:22
+BRH:21
+FNF:5
+FNH:5
+end_of_record
+SF:/home/runner/work/2048Game/2048Game/src/2048Game/Services/StorageService.cs
+FN:29,System.Void _2048Game.Services.StorageService::SaveGame(_2048Game.Models.Abstractions.IBoard,_2048Game.Models.ScoreBoard)
+FNDA:1,System.Void _2048Game.Services.StorageService::SaveGame(_2048Game.Models.Abstractions.IBoard,_2048Game.Models.ScoreBoard)
+DA:30,1
+DA:31,1
+DA:32,1
+DA:33,1
+DA:34,1
+FN:37,System.ValueTuple`2<_2048Game.Models.Abstractions.IBoard,_2048Game.Models.ScoreBoard> _2048Game.Services.StorageService::LoadGame()
+FNDA:1,System.ValueTuple`2<_2048Game.Models.Abstractions.IBoard,_2048Game.Models.ScoreBoard> _2048Game.Services.StorageService::LoadGame()
+DA:38,1
+DA:39,1
+DA:41,1
+DA:44,1
+DA:45,1
+DA:47,1
+DA:50,1
+BRDA:39,13,0,1
+BRDA:39,13,1,1
+BRDA:45,40,0,1
+BRDA:45,40,1,1
+FN:54,System.Void _2048Game.Services.StorageService::ResetGameSave()
+FNDA:1,System.Void _2048Game.Services.StorageService::ResetGameSave()
+DA:55,1
+DA:57,1
+DA:60,1
+DA:62,0
+DA:66,1
+DA:67,1
+DA:69,0
+DA:72,1
+DA:73,1
+DA:74,1
+BRDA:55,11,0,1
+BRDA:55,11,1,1
+BRDA:60,35,0,0
+BRDA:60,35,1,1
+BRDA:67,51,0,0
+BRDA:67,51,1,1
+FN:77,T _2048Game.Services.StorageService::ReadJsonFile(System.String)
+FNDA:3,T _2048Game.Services.StorageService::ReadJsonFile(System.String)
+DA:78,3
+FN:12,System.Void _2048Game.Services.StorageService::.ctor(System.String)
+FNDA:3,System.Void _2048Game.Services.StorageService::.ctor(System.String)
+DA:13,3
+DA:15,3
+DA:16,3
+DA:17,3
+DA:19,3
+DA:20,3
+DA:22,3
+DA:24,0
+DA:26,3
+BRDA:15,12,0,3
+BRDA:15,12,1,0
+BRDA:22,76,0,0
+BRDA:22,76,1,3
+LF:32
+LH:29
+BRF:14
+BRH:10
+FNF:5
+FNH:5
+end_of_record
+SF:/home/runner/work/2048Game/2048Game/src/2048Game/Services/TileControlService.cs
+FN:9,System.Int32 _2048Game.Services.TileControlService::get_MergeScore()
+FNDA:60,System.Int32 _2048Game.Services.TileControlService::get_MergeScore()
+DA:10,60
+FN:13,System.Boolean _2048Game.Services.TileControlService::Move(_2048Game.Core.Direction)
+FNDA:20,System.Boolean _2048Game.Services.TileControlService::Move(_2048Game.Core.Direction)
+DA:14,20
+DA:15,20
+DA:16,20
+DA:17,5
+DA:18,5
+DA:19,5
+DA:20,5
+DA:21,0
+DA:22,20
+BRDA:15,8,3,5
+BRDA:15,8,4,5
+BRDA:15,8,1,5
+BRDA:15,8,2,5
+BRDA:15,8,0,0
+FN:26,System.Boolean _2048Game.Services.TileControlService::MoveLeft()
+FNDA:5,System.Boolean _2048Game.Services.TileControlService::MoveLeft()
+DA:27,5
+DA:28,70
+DA:30,100
+DA:31,30
+DA:32,30
+DA:33,80
+DA:35,10
+DA:36,10
+DA:38,5
+DA:39,5
+DA:40,5
+DA:41,5
+DA:42,5
+DA:45,5
+DA:47,5
+DA:48,5
+DA:51,5
+DA:52,5
+DA:56,5
+BRDA:28,324,1,30
+BRDA:33,284,1,10
+BRDA:36,116,0,5
+BRDA:36,120,0,0
+BRDA:36,120,1,5
+BRDA:36,176,0,5
+BRDA:36,188,0,5
+BRDA:36,116,1,5
+BRDA:36,176,1,5
+BRDA:36,188,1,5
+BRDA:45,250,0,5
+BRDA:45,250,1,5
+BRDA:33,284,0,30
+BRDA:28,324,0,5
+FN:60,System.Boolean _2048Game.Services.TileControlService::MoveRight()
+FNDA:5,System.Boolean _2048Game.Services.TileControlService::MoveRight()
+DA:61,5
+DA:62,70
+DA:64,100
+DA:65,30
+DA:66,30
+DA:67,80
+DA:69,10
+DA:70,10
+DA:72,5
+DA:73,5
+DA:74,5
+DA:75,5
+DA:76,5
+DA:79,5
+DA:81,5
+DA:82,5
+DA:85,5
+DA:86,5
+DA:90,5
+BRDA:62,336,1,30
+BRDA:67,296,1,10
+BRDA:70,128,0,5
+BRDA:70,132,0,0
+BRDA:70,132,1,5
+BRDA:70,188,0,5
+BRDA:70,200,0,5
+BRDA:70,128,1,5
+BRDA:70,188,1,5
+BRDA:70,200,1,5
+BRDA:79,262,0,5
+BRDA:79,262,1,5
+BRDA:67,296,0,30
+BRDA:62,336,0,5
+FN:94,System.Boolean _2048Game.Services.TileControlService::MoveUp()
+FNDA:5,System.Boolean _2048Game.Services.TileControlService::MoveUp()
+DA:95,5
+DA:96,70
+DA:98,100
+DA:99,30
+DA:100,30
+DA:101,80
+DA:103,10
+DA:104,10
+DA:106,5
+DA:107,5
+DA:108,5
+DA:109,5
+DA:110,5
+DA:113,5
+DA:115,5
+DA:116,5
+DA:119,5
+DA:120,5
+DA:124,5
+BRDA:96,324,1,30
+BRDA:101,284,1,10
+BRDA:104,116,0,5
+BRDA:104,120,0,0
+BRDA:104,120,1,5
+BRDA:104,176,0,5
+BRDA:104,188,0,5
+BRDA:104,116,1,5
+BRDA:104,176,1,5
+BRDA:104,188,1,5
+BRDA:113,250,0,5
+BRDA:113,250,1,5
+BRDA:101,284,0,30
+BRDA:96,324,0,5
+FN:128,System.Boolean _2048Game.Services.TileControlService::MoveDown()
+FNDA:5,System.Boolean _2048Game.Services.TileControlService::MoveDown()
+DA:129,5
+DA:130,70
+DA:132,100
+DA:133,30
+DA:134,30
+DA:135,80
+DA:137,10
+DA:138,10
+DA:140,5
+DA:141,5
+DA:142,5
+DA:143,5
+DA:144,5
+DA:147,5
+DA:149,5
+DA:150,5
+DA:153,5
+DA:154,5
+DA:158,5
+BRDA:130,336,1,30
+BRDA:135,296,1,10
+BRDA:138,128,0,5
+BRDA:138,132,0,0
+BRDA:138,132,1,5
+BRDA:138,188,0,5
+BRDA:138,200,0,5
+BRDA:138,128,1,5
+BRDA:138,188,1,5
+BRDA:138,200,1,5
+BRDA:147,262,0,5
+BRDA:147,262,1,5
+BRDA:135,296,0,30
+BRDA:130,336,0,5
+FN:7,System.Void _2048Game.Services.TileControlService::.ctor(_2048Game.Models.Abstractions.IBoard)
+FNDA:20,System.Void _2048Game.Services.TileControlService::.ctor(_2048Game.Models.Abstractions.IBoard)
+DA:8,20
+LF:87
+LH:86
+BRF:61
+BRH:56
+FNF:7
+FNH:7
+end_of_record
+SF:/home/runner/work/2048Game/2048Game/src/2048Game/Models/Board.cs
+FN:28,System.Collections.Generic.IReadOnlyCollection`1<_2048Game.Models.Tile> _2048Game.Models.Board::get_Tiles()
+FNDA:115,System.Collections.Generic.IReadOnlyCollection`1<_2048Game.Models.Tile> _2048Game.Models.Board::get_Tiles()
+DA:29,115
+FN:30,System.Int32 _2048Game.Models.Board::get_Size()
+FNDA:127,System.Int32 _2048Game.Models.Board::get_Size()
+DA:31,127
+FN:37,System.Void _2048Game.Models.Board::AddRandomTile()
+FNDA:35,System.Void _2048Game.Models.Board::AddRandomTile()
+DA:38,35
+DA:39,35
+DA:40,56
+DA:42,34
+DA:43,34
+BRDA:40,75,1,52
+BRDA:40,75,0,38
+BRDA:42,115,0,6
+BRDA:42,115,1,28
+FN:46,System.Void _2048Game.Models.Board::RemoveTile(_2048Game.Models.Tile)
+FNDA:1,System.Void _2048Game.Models.Board::RemoveTile(_2048Game.Models.Tile)
+DA:47,1
+DA:48,1
+FN:51,System.Void _2048Game.Models.Board::Reset(System.Int32)
+FNDA:1,System.Void _2048Game.Models.Board::Reset(System.Int32)
+DA:52,1
+DA:53,1
+DA:54,1
+DA:55,1
+FN:58,System.Boolean _2048Game.Models.Board::CanMove()
+FNDA:3,System.Boolean _2048Game.Models.Board::CanMove()
+DA:59,3
+BRDA:59,24,0,1
+BRDA:59,24,1,2
+FN:64,System.Boolean _2048Game.Models.Board::VerifyTileIsMergeable(_2048Game.Models.Tile)
+FNDA:158,System.Boolean _2048Game.Models.Board::VerifyTileIsMergeable(_2048Game.Models.Tile)
+DA:65,158
+DA:66,16
+DA:68,0
+DA:72,206
+DA:73,16
+DA:75,0
+DA:79,176
+DA:80,16
+DA:82,0
+DA:86,188
+DA:87,16
+BRDA:66,38,0,12
+BRDA:66,57,0,0
+BRDA:66,38,1,16
+BRDA:66,57,1,16
+BRDA:73,86,0,12
+BRDA:73,105,0,0
+BRDA:73,86,1,16
+BRDA:73,105,1,16
+BRDA:80,134,0,12
+BRDA:80,153,0,0
+BRDA:80,134,1,16
+BRDA:80,153,1,16
+BRDA:87,184,0,12
+BRDA:87,184,1,4
+BRDA:65,19,0,30
+BRDA:65,19,1,112
+BRDA:72,19,0,30
+BRDA:72,19,1,160
+BRDA:79,17,0,40
+BRDA:79,17,1,120
+BRDA:86,17,0,52
+BRDA:86,17,1,120
+FN:91,System.Void _2048Game.Models.Board::Initialize()
+FNDA:16,System.Void _2048Game.Models.Board::Initialize()
+DA:92,16
+DA:93,16
+DA:94,16
+FN:9,System.Void _2048Game.Models.Board::.ctor(System.Int32)
+FNDA:17,System.Void _2048Game.Models.Board::.ctor(System.Int32)
+DA:10,17
+DA:14,17
+DA:16,17
+DA:19,17
+DA:21,2
+DA:24,15
+DA:25,15
+DA:26,15
+BRDA:19,30,0,16
+BRDA:19,30,1,2
+BRDA:19,34,0,2
+BRDA:19,34,1,15
+BRDA:19,43,0,2
+BRDA:19,43,1,15
+LF:36
+LH:33
+BRF:34
+BRH:31
+FNF:9
+FNH:9
+end_of_record
+SF:/home/runner/work/2048Game/2048Game/src/2048Game/Models/ScoreBoard.cs
+FN:4,System.Int32 _2048Game.Models.ScoreBoard::get_Score()
+FNDA:43,System.Int32 _2048Game.Models.ScoreBoard::get_Score()
+DA:5,43
+FN:5,System.Int32 _2048Game.Models.ScoreBoard::get_BestScore()
+FNDA:26,System.Int32 _2048Game.Models.ScoreBoard::get_BestScore()
+DA:6,26
+FN:9,System.Void _2048Game.Models.ScoreBoard::AddScore(System.Int32)
+FNDA:5,System.Void _2048Game.Models.ScoreBoard::AddScore(System.Int32)
+DA:10,5
+DA:11,5
+DA:13,4
+DA:15,5
+BRDA:11,26,0,4
+BRDA:11,26,1,5
+FN:18,System.Void _2048Game.Models.ScoreBoard::Reset()
+FNDA:4,System.Void _2048Game.Models.ScoreBoard::Reset()
+DA:19,4
+DA:20,4
+LF:8
+LH:8
+BRF:2
+BRH:2
+FNF:4
+FNH:4
+end_of_record
+SF:/home/runner/work/2048Game/2048Game/src/2048Game/Models/Tile.cs
+FN:7,System.Int32 _2048Game.Models.Tile::get_Row()
+FNDA:1693,System.Int32 _2048Game.Models.Tile::get_Row()
+DA:8,1693
+FN:8,System.Int32 _2048Game.Models.Tile::get_Column()
+FNDA:610,System.Int32 _2048Game.Models.Tile::get_Column()
+DA:9,610
+FN:9,System.Int32 _2048Game.Models.Tile::get_Value()
+FNDA:334,System.Int32 _2048Game.Models.Tile::get_Value()
+DA:10,334
+FN:13,System.ConsoleColor _2048Game.Models.Tile::get_Color()
+FNDA:4,System.ConsoleColor _2048Game.Models.Tile::get_Color()
+DA:14,4
+FN:17,System.ConsoleColor _2048Game.Models.Tile::get_BackgroundColor()
+FNDA:4,System.ConsoleColor _2048Game.Models.Tile::get_BackgroundColor()
+DA:18,4
+FN:5,System.Void _2048Game.Models.Tile::.ctor(System.Int32,System.Int32,System.Int32)
+FNDA:98,System.Void _2048Game.Models.Tile::.ctor(System.Int32,System.Int32,System.Int32)
+DA:6,98
+LF:6
+LH:6
+BRF:0
+BRH:0
+FNF:6
+FNH:6
+end_of_record
+SF:/home/runner/work/2048Game/2048Game/src/2048Game/Core/Mapping.cs
+FN:6,System.Void _2048Game.Core.Mapping::.cctor()
+FNDA:1,System.Void _2048Game.Core.Mapping::.cctor()
+DA:7,1
+DA:8,1
+DA:9,1
+DA:10,1
+DA:11,1
+DA:12,1
+DA:13,1
+DA:14,1
+DA:16,1
+DA:17,1
+DA:18,1
+DA:19,1
+DA:20,1
+DA:21,1
+DA:22,1
+DA:23,1
+DA:24,1
+DA:25,1
+DA:26,1
+DA:27,1
+DA:28,1
+DA:29,1
+DA:30,1
+DA:32,1
+DA:33,1
+DA:34,1
+DA:35,1
+DA:36,1
+DA:37,1
+DA:38,1
+DA:39,1
+DA:40,1
+DA:41,1
+DA:42,1
+DA:43,1
+DA:44,1
+DA:45,1
+DA:46,1
+LF:38
+LH:38
+BRF:0
+BRH:0
+FNF:1
+FNH:1
+end_of_record
+SF:/home/runner/work/2048Game/2048Game/src/2048Game/Core/Exceptions/GameExitException.cs
+FN:2,System.Void _2048Game.Core.Exceptions.GameExitException::.ctor()
+FNDA:2,System.Void _2048Game.Core.Exceptions.GameExitException::.ctor()
+DA:3,2
+LF:1
+LH:1
+BRF:0
+BRH:0
+FNF:1
+FNH:1
+end_of_record
