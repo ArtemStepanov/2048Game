@@ -82,6 +82,21 @@ public sealed class GameServiceTests
     }
 
     [Fact]
+    public void ProcessStep_Handles_Game_Over_Start_New_Game()
+    {
+        _mockTileControlService.Setup(t => t.Move(It.IsAny<Direction>())).Returns(false);
+        _mockBoard.Setup(b => b.CanMove()).Returns(false);
+        _mockRenderService.Setup(r => r.ConfirmAction(It.IsAny<string>())).Returns(true);
+
+        _gameService.ProcessStep(Direction.Left);
+
+        _mockBoard.Verify(b => b.Reset(It.IsAny<int>()), Times.Once);
+        _mockRenderService.Verify(r => r.RenderGameOver(), Times.Once);
+        _mockRenderService.Verify(r => r.RenderBoard(), Times.Exactly(2));
+        _mockStorageService.Verify(s => s.SaveGame(_mockBoard.Object, _scoreBoard), Times.Once);
+    }
+
+    [Fact]
     public void StartNewGame_Resets_Board_And_Score()
     {
         _gameService.StartNewGame();

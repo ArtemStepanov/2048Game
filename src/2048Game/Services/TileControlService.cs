@@ -14,41 +14,40 @@ public sealed class TileControlService(IBoard board) : ITileControlService
         MergeScore = 0; // Reset merge score for each move
         return direction switch
         {
-            Direction.Left => MoveLeft(),
-            Direction.Right => MoveRight(),
-            Direction.Up => MoveUp(),
-            Direction.Down => MoveDown(),
+            Direction.Left => MoveTiles(t => t.Row, t => t.Column, 0, 1, board.Size),
+            Direction.Right => MoveTiles(t => t.Row, t => t.Column, board.Size - 1, -1, board.Size),
+            Direction.Up => MoveTiles(t => t.Column, t => t.Row, 0, 1, board.Size),
+            Direction.Down => MoveTiles(t => t.Column, t => t.Row, board.Size - 1, -1, board.Size),
             _ => throw new ArgumentOutOfRangeException(nameof(direction), direction, null)
         };
     }
 
-    private bool MoveLeft()
+    private bool MoveTiles(Func<Tile, int> primarySelector, Func<Tile, int> secondarySelector, int start, int step, int size)
     {
         var moved = false;
-        for (var row = 0; row < board.Size; row++)
+
+        for (var primaryIndex = 0; primaryIndex < size; primaryIndex++)
         {
-            var tiles = board.Tiles.Where(t => t.Row == row).OrderBy(t => t.Column).ToList();
-            var posVertical = 0;
+            var tiles = GetTilesInOrder(primarySelector, secondarySelector, primaryIndex, step);
+            var pos = start;
             Tile? previousTile = null;
-            for (var i = 0; i < tiles.Count; i++)
+
+            foreach (var tile in tiles)
             {
-                var tile = tiles[i];
-                if (i > 0 && previousTile?.Value == tile.Value && previousTile.Column == posVertical - 1)
+                if (ShouldMergeTiles(tile, previousTile, secondarySelector, pos, step))
                 {
-                    previousTile.Value *= 2;
-                    MergeScore += previousTile.Value;
-                    board.RemoveTile(tile);
+                    MergeTiles(tile, previousTile);
                     moved = true;
                     continue;
                 }
 
-                if (tile.Column != posVertical)
+                if (secondarySelector(tile) != pos)
                 {
                     moved = true;
-                    tile.Column = posVertical;
+                    MoveTile(tile, primarySelector, pos);
                 }
 
-                posVertical++;
+                pos += step;
                 previousTile = tile;
             }
         }
@@ -56,105 +55,39 @@ public sealed class TileControlService(IBoard board) : ITileControlService
         return moved;
     }
 
-    private bool MoveRight()
+    private List<Tile> GetTilesInOrder(Func<Tile, int> primarySelector, Func<Tile, int> secondarySelector, int primaryIndex, int step)
     {
-        var moved = false;
-        for (var row = 0; row < board.Size; row++)
-        {
-            var tiles = board.Tiles.Where(t => t.Row == row).OrderByDescending(t => t.Column).ToList();
-            var posVertical = board.Size - 1;
-            Tile? previousTile = null;
-            for (var i = 0; i < tiles.Count; i++)
-            {
-                var tile = tiles[i];
-                if (i > 0 && previousTile?.Value == tile.Value && previousTile.Column == posVertical + 1)
-                {
-                    previousTile.Value *= 2;
-                    MergeScore += previousTile.Value;
-                    board.RemoveTile(tile);
-                    moved = true;
-                    continue;
-                }
-
-                if (tile.Column != posVertical)
-                {
-                    moved = true;
-                    tile.Column = posVertical;
-                }
-
-                posVertical--;
-                previousTile = tile;
-            }
-        }
-
-        return moved;
+        return board.Tiles.Where(t => primarySelector(t) == primaryIndex)
+            .OrderBy(t => secondarySelector(t) * step)
+            .ToList();
     }
 
-    private bool MoveUp()
+    private void MergeTiles(Tile tile, Tile? previousTile)
     {
-        var moved = false;
-        for (var column = 0; column < board.Size; column++)
+        if (previousTile == null)
         {
-            var tiles = board.Tiles.Where(t => t.Column == column).OrderBy(t => t.Row).ToList();
-            var posHorizontal = 0;
-            Tile? previousTile = null;
-            for (var i = 0; i < tiles.Count; i++)
-            {
-                var tile = tiles[i];
-                if (i > 0 && previousTile?.Value == tile.Value && previousTile.Row == posHorizontal - 1)
-                {
-                    previousTile.Value *= 2;
-                    MergeScore += previousTile.Value;
-                    board.RemoveTile(tile);
-                    moved = true;
-                    continue;
-                }
-
-                if (tile.Row != posHorizontal)
-                {
-                    moved = true;
-                    tile.Row = posHorizontal;
-                }
-
-                posHorizontal++;
-                previousTile = tile;
-            }
+            return;
         }
 
-        return moved;
+        previousTile.Value *= 2;
+        MergeScore += previousTile.Value;
+        board.RemoveTile(tile);
     }
 
-    private bool MoveDown()
+    private static bool ShouldMergeTiles(Tile tile, Tile? previousTile, Func<Tile, int> secondarySelector, int pos, int step)
     {
-        var moved = false;
-        for (var column = 0; column < board.Size; column++)
+        return previousTile?.Value == tile.Value && secondarySelector(previousTile) == pos - step;
+    }
+
+    private static void MoveTile(Tile tile, Func<Tile, int> primarySelector, int pos)
+    {
+        if (primarySelector(tile) == tile.Row)
         {
-            var tiles = board.Tiles.Where(t => t.Column == column).OrderByDescending(t => t.Row).ToList();
-            var posHorizontal = board.Size - 1;
-            Tile? previousTile = null;
-            for (var x = 0; x < tiles.Count; x++)
-            {
-                var tile = tiles[x];
-                if (x > 0 && previousTile?.Value == tile.Value && previousTile.Row == posHorizontal + 1)
-                {
-                    previousTile.Value *= 2;
-                    MergeScore += previousTile.Value;
-                    board.RemoveTile(tile);
-                    moved = true;
-                    continue;
-                }
-
-                if (tile.Row != posHorizontal)
-                {
-                    moved = true;
-                    tile.Row = posHorizontal;
-                }
-
-                posHorizontal--;
-                previousTile = tile;
-            }
+            tile.Column = pos;
         }
-
-        return moved;
+        else
+        {
+            tile.Row = pos;
+        }
     }
 }
