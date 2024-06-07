@@ -6,60 +6,60 @@ on:
     types: [created]
 
 jobs:
-  build:
+  release:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Install GitVersion
-      uses: gittools/actions/gitversion/setup@v1.1.1
+      - name: Determine version
+        id: gitversion
+        uses: gittools/actions/gitversion/execute@v1.1.1
 
-    - name: Determine version
-      id: gitversion
-      run: gitversion /output json /showvariable FullSemVer
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ vars.DOTNET_VERSION }}
 
-    - name: Set up .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: ${{ vars.DOTNET_VERSION }}
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
 
-    - name: Cache NuGet packages
-      uses: actions/cache@v4
-      with:
-        path: ~/.nuget/packages
-        key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
-        restore-keys: |
-          ${{ runner.os }}-nuget-
+      - name: Restore dependencies
+        run: dotnet restore
 
-    - name: Restore dependencies
-      run: dotnet restore
+      - name: Replace version in csproj
+        run: |
+          version=${{ steps.gitversion.outputs.FullSemVer }}
+          echo "Determined version: $version"
+          sed -i "s|<Version>.*</Version>|<Version>$version</Version>|" src/2048Game/2048Game.csproj
+          sed -i "s|<AssemblyVersion>.*</AssemblyVersion>|<AssemblyVersion>$version</AssemblyVersion>|" src/2048Game/2048Game.csproj
+          sed -i "s|<FileVersion>.*</FileVersion>|<FileVersion>$version</FileVersion>|" src/2048Game/2048Game.csproj
 
-    - name: Replace version in csproj
-      run: |
-        version=$(gitversion /output json | jq -r .FullSemVer)
-        echo "Determined version: $version"
-        sed -i "s|<Version>.*</Version>|<Version>$version</Version>|" src/2048Game/2048Game.csproj
-        sed -i "s|<AssemblyVersion>.*</AssemblyVersion>|<AssemblyVersion>$version</AssemblyVersion>|" src/2048Game/2048Game.csproj
-        sed -i "s|<FileVersion>.*</FileVersion>|<FileVersion>$version</FileVersion>|" src/2048Game/2048Game.csproj
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
 
-    - name: Build
-      run: dotnet build --configuration Release --no-restore
+      - name: Quick tests run
+        run: dotnet test --configuration Release --no-restore
 
-    - name: Publish
-      run: dotnet publish --configuration Release --no-restore --output ./output
+      - name: Publish
+        run: dotnet publish --configuration Release --no-restore --output ./output
 
-    - name: Create release artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: 2048Game
-        path: ./output
+      - name: Create release artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: 2048Game
+          path: ./output
 
-    - name: Create Tag
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        version=$(gitversion /output json | jq -r .FullSemVer)
-        git tag v$version
-        git push origin v$version
+      - name: Create Tag
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          version=${{ steps.gitversion.outputs.FullSemVer }}
+          git tag v$version
+          git push origin v$version
