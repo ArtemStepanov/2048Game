@@ -15,14 +15,19 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Determine version
-        id: gitversion
-        uses: gittools/actions/gitversion/execute@v1.1.1
-
       - name: Set up .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ vars.DOTNET_VERSION }}
+
+      - name: Setup GitVersion
+        uses: gittools/actions/gitversion/setup@v1.1.1
+        with:
+          versionSpec: '5.x'
+
+      - name: Use GitVersion
+        id: gitversion
+        run: gitversion /output buildserver
 
       - name: Cache NuGet packages
         uses: actions/cache@v4
@@ -37,7 +42,7 @@ jobs:
 
       - name: Replace version in csproj
         run: |
-          version=${{ steps.gitversion.outputs.FullSemVer }}
+          version=${{ steps.gitversion.outputs['GitVersion.FullSemVer'] }}
           echo "Determined version: $version"
           sed -i "s|<Version>.*</Version>|<Version>$version</Version>|" src/2048Game/2048Game.csproj
           sed -i "s|<AssemblyVersion>.*</AssemblyVersion>|<AssemblyVersion>$version</AssemblyVersion>|" src/2048Game/2048Game.csproj
@@ -51,6 +56,10 @@ jobs:
 
       - name: Publish
         run: dotnet publish --configuration Release --no-restore --output ./output
+
+      - name: Create release artifact (zip)
+        run: |
+          zip -r 2048Game.zip ./output
 
       # - name: Create release artifact
       #   uses: actions/upload-artifact@v4
@@ -66,23 +75,10 @@ jobs:
       #     git tag v$version
       #     git push origin v$version
 
-      - name: Create GitHub Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
         with:
-          tag_name: v${{ steps.gitversion.outputs.FullSemVer }}
-          release_name: Release ${{ steps.gitversion.outputs.FullSemVer }}
-          draft: false
-          prerelease: false
-
-      - name: Upload Release Asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./output
-          asset_name: 2048Game.zip
-          asset_content_type: application/zip
+          files: ./2048Game.zip
+          tag_name: v${{ steps.gitversion.outputs['GitVersion.FullSemVer'] }}
+          name: Release ${{ steps.gitversion.outputs['GitVersion.FullSemVer'] }}
+          body_path: ${{ github.workspace }}/release-notes.md
