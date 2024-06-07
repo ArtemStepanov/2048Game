@@ -1,5 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
     <PropertyGroup>
         <OutputType>Exe</OutputType>
         <TargetFramework>net8.0</TargetFramework>
@@ -7,9 +6,6 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <PackageId>2048Game</PackageId>
-        <AssemblyVersion>1.0.0.0</AssemblyVersion>
-        <FileVersion>1.0.0.0</FileVersion>
-        <Version>1.0.0</Version>
         <Title>2048Game</Title>
         <Authors>Artem Stepanov</Authors>
         <Description>A C# implementation of the classic 2048 game. The goal is to combine tiles with the same number to create a tile with the number 2048.</Description>
@@ -17,10 +13,13 @@
         <RepositoryUrl>https://github.com/ArtemStepanov/2048Game</RepositoryUrl>
         <RepositoryType>GitHub</RepositoryType>
         <Company>Artem Stepanov</Company>
+        <Version>$(GitVersion_GitVersion_FullSemVer)</Version>
     </PropertyGroup>
-
     <ItemGroup>
+        <PackageReference Include="GitVersion.MsBuild" Version="5.12.0">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0"/>
     </ItemGroup>
-
 </Project>
