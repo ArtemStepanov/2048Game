@@ -14,6 +14,11 @@ on:
         type: boolean
         required: false
         default: false
+      tag:
+        description: 'Tag changes'
+        type: boolean
+        required: false
+        default: false
 
 jobs:
   versioning:
@@ -45,7 +50,7 @@ jobs:
         run: dotnet build --no-restore --configuration Release
 
       - name: Commit changes
-        if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop' }}
+        if: ${{ inputs.commit == true || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PERSONAL_ACCESS_TOKEN: ${{ secrets.PAT }}
@@ -58,7 +63,7 @@ jobs:
           git push origin HEAD:${{ github.ref }}
 
       - name: Tag changes
-        if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop' }}
+        if: ${{ inputs.tag == true || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PERSONAL_ACCESS_TOKEN: ${{ secrets.PAT }}

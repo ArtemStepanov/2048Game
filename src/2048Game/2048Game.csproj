@@ -13,7 +13,7 @@
         <RepositoryUrl>https://github.com/ArtemStepanov/2048Game</RepositoryUrl>
         <RepositoryType>GitHub</RepositoryType>
         <Company>Artem Stepanov</Company>
-        <Version>$(GitVersion_SemVer)</Version>
+        <Version>$(GitVersion_GitVersion_FullSemVer)</Version>
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="GitVersion.MsBuild" Version="5.12.0">
