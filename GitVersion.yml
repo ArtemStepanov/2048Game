@@ -24,6 +24,7 @@ branches:
     track-merge-target: false
     regex: ^feature[/-]
     source-branches: ['develop']
+    tracks-release-branches: true
   release:
     tag: 'rc'
     increment: None

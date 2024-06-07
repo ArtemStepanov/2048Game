@@ -2,11 +2,6 @@ name: Create Release
 
 on:
   workflow_dispatch:
-    inputs:
-      version:
-        description: 'Version to release'
-        required: true
-        default: '1.0.0'
 
 jobs:
   release:
@@ -23,6 +18,35 @@ jobs:
         with:
           dotnet-version: ${{ vars.DOTNET_VERSION }}
 
+      - name: Setup GitVersion
+        uses: gittools/actions/gitversion/setup@v1.1.1
+        with:
+          versionSpec: '5.x'
+
+      - name: Use GitVersion
+        id: gitversion
+        run: dotnet-gitversion /output buildserver
+
+      - name: Replace version in csproj
+        run: |
+          sed -i "s|<Version>.*</Version>|<Version>${{ env.GitVersion_SemVer }}</Version>|" src/2048Game/2048Game.csproj
+          sed -i "s|<AssemblyVersion>.*</AssemblyVersion>|<AssemblyVersion>${{ env.GitVersion_AssemblySemVer }}</AssemblyVersion>|" src/2048Game/2048Game.csproj
+          sed -i "s|<FileVersion>.*</FileVersion>|<FileVersion>${{ env.GitVersion_AssemblySemFileVer }}</FileVersion>|" src/2048Game/2048Game.csproj
+
+      - name: Commit and Tag changes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PERSONAL_ACCESS_TOKEN: ${{ secrets.PAT }}
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add src/2048Game/2048Game.csproj
+          git commit -m "Update version to ${{ env.GitVersion_SemVer }}"
+          git tag v${{ env.GitVersion_SemVer }}
+          git remote set-url origin https://x-access-token:${{ env.PERSONAL_ACCESS_TOKEN }}@github.com/${{ github.repository }}
+          git push origin HEAD:${{ github.ref }}
+          git push origin v${{ steps.gitversion.outputs.SemVer }}
+
       - name: Cache NuGet packages
         uses: actions/cache@v4
         with:
@@ -33,22 +57,6 @@ jobs:
 
       - name: Restore dependencies
         run: dotnet restore
-
-      - name: Replace version in csproj
-        run: |
-          sed -i "s|<Version>.*</Version>|<Version>${{ github.event.inputs.version }}</Version>|" src/2048Game/2048Game.csproj
-          sed -i "s|<AssemblyVersion>.*</AssemblyVersion>|<AssemblyVersion>${{ github.event.inputs.version }}</AssemblyVersion>|" src/2048Game/2048Game.csproj
-          sed -i "s|<FileVersion>.*</FileVersion>|<FileVersion>${{ github.event.inputs.version }}</FileVersion>|" src/2048Game/2048Game.csproj
-
-      - name: Commit and Tag changes
-        run: |
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git add src/2048Game/2048Game.csproj
-          git commit -m "Update version to ${{ github.event.inputs.version }}"
-          git tag v${{ github.event.inputs.version }}
-          git push origin HEAD:${{ github.ref }}
-          git push origin v${{ github.event.inputs.version }}
 
       - name: Build
         run: dotnet build --configuration Release --no-restore
@@ -67,6 +75,6 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: ./2048Game.zip
-          tag_name: v${{ github.event.inputs.version }}
-          name: Release ${{ github.event.inputs.version }}
-          body_path: ${{ github.workspace }}/releases/release-notes-${{ github.event.inputs.version }}.md
+          tag_name: v${{ env.GitVersion_SemVer }}
+          name: Release ${{ env.GitVersion_SemVer }}
+          body_path: ${{ github.workspace }}/releases/release-notes-${{ env.GitVersion_SemVer }}.md

@@ -11,8 +11,11 @@ on:
       - hotfix/**
 
 jobs:
-  build:
+  build-test:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        dotnet-version: ['${{ vars.DOTNET_VERSION }}', '7.0.x', '6.0.x']
 
     steps:
       - name: Checkout code
@@ -23,16 +26,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: ${{ vars.DOTNET_VERSION }}
-
-      - name: Setup GitVersion
-        uses: gittools/actions/gitversion/setup@v1.1.1
-        with:
-          versionSpec: '5.x'
-
-      - name: Use GitVersion
-        id: gitversion
-        run: dotnet-gitversion /output buildserver
+          dotnet-version: ${{ matrix.dotnet-version }}
 
       - name: Cache NuGet packages
         uses: actions/cache@v4
@@ -44,46 +38,9 @@ jobs:
 
       - name: Restore dependencies
         run: dotnet restore
-
-      - name: Replace version in csproj
-        run: |
-          sed -i "s|<Version>.*</Version>|<Version>${{ env.GitVersion_MajorMinorPatch }}</Version>|" src/2048Game/2048Game.csproj
-          sed -i "s|<AssemblyVersion>.*</AssemblyVersion>|<AssemblyVersion>${{ env.GitVersion_AssemblySemVer }}</AssemblyVersion>|" src/2048Game/2048Game.csproj
-          sed -i "s|<FileVersion>.*</FileVersion>|<FileVersion>${{ env.GitVersion_AssemblySemFileVer }}</FileVersion>|" src/2048Game/2048Game.csproj
 
       - name: Build
         run: dotnet build --no-restore --configuration Release
-
-      - name: Commit and Tag changes
-        run: |
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git add src/2048Game/2048Game.csproj
-          git commit -m "Update version to ${{ github.event.inputs.version }}"
-          git tag v${{ github.event.inputs.version }}
-          git push origin HEAD:${{ github.ref }}
-          git push origin v${{ github.event.inputs.version }}
-
-  test:
-    runs-on: ubuntu-latest
-    needs: build
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Cache NuGet packages
-        uses: actions/cache@v4
-        with:
-          path: ~/.nuget/packages
-          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
-          restore-keys: |
-            ${{ runner.os }}-nuget-
-
-      - name: Restore dependencies
-        run: dotnet restore
 
       - name: Run tests with coverage
         run: |
@@ -107,22 +64,3 @@ jobs:
           files: ./coverage/coverage.cobertura.xml
           flags: unittests
           name: codecov-umbrella
-
-  deploy-coverage-report:
-    runs-on: ubuntu-latest
-    needs: test
-    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
-
-    steps:
-      - name: Download coverage report
-        uses: actions/download-artifact@v4
-        with:
-          name: code-coverage-report
-          path: coverage
-
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./coverage/report
-          destination_dir: coverage
