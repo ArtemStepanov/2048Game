@@ -48,13 +48,13 @@ jobs:
           dotnet tool install --global dotnet-reportgenerator-globaltool
           reportgenerator -reports:tests/2048Game.Tests/coverage/coverage.cobertura.xml -targetdir:coverage/report -reporttypes:Html
 
-      - name: Upload coverage report
+      - name: Deploy to GitHub Pages
         if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop') && matrix.dotnet-version == '${{ vars.DOTNET_VERSION }}'
-        uses: actions/upload-artifact@v4
+        uses: peaceiris/actions-gh-pages@v4
         with:
-          name: code-coverage-report
-          path: coverage
-          retention-days: 5
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./coverage/report
+          destination_dir: coverage
 
       - name: Upload coverage reports to Codecov
         if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop') && matrix.dotnet-version == '${{ vars.DOTNET_VERSION }}'
