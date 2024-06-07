@@ -8,13 +8,6 @@
 
 A C# implementation of the classic 2048 game. The goal is to combine tiles with the same number to create a tile with the number 2048.
 
-<style>
-  .image {
-    width: 300px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  }
-</style>
-
 <img src="pic/game.png" alt="2048 Game" style="width: 300px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">
 
 
