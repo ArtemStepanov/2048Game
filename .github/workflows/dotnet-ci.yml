@@ -1,4 +1,4 @@
-name: Build and Test
+name: Build & Test
 
 on:
   workflow_dispatch:
@@ -7,6 +7,8 @@ on:
     branches:
       - main
       - develop
+      - feature/**
+      - hotfix/**
 
 jobs:
   build:
@@ -30,7 +32,7 @@ jobs:
 
       - name: Use GitVersion
         id: gitversion
-        run: gitversion /output buildserver
+        run: dotnet-gitversion /output buildserver
 
       - name: Cache NuGet packages
         uses: actions/cache@v4
@@ -51,6 +53,16 @@ jobs:
 
       - name: Build
         run: dotnet build --no-restore --configuration Release
+
+      - name: Commit and Tag changes
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add src/2048Game/2048Game.csproj
+          git commit -m "Update version to ${{ github.event.inputs.version }}"
+          git tag v${{ github.event.inputs.version }}
+          git push origin HEAD:${{ github.ref }}
+          git push origin v${{ github.event.inputs.version }}
 
   test:
     runs-on: ubuntu-latest
@@ -80,6 +92,7 @@ jobs:
           reportgenerator -reports:coverage/coverage.cobertura.xml -targetdir:coverage/report -reporttypes:Html
 
       - name: Upload coverage report
+        if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop' }}
         uses: actions/upload-artifact@v4
         with:
           name: code-coverage-report
@@ -87,6 +100,7 @@ jobs:
           retention-days: 5
 
       - name: Upload coverage reports to Codecov
+        if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop' }}
         uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}

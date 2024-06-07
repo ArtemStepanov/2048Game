@@ -1,5 +1,5 @@
-assembly-versioning-scheme: MajorMinorPatch
 mode: ContinuousDelivery
+assembly-versioning-scheme: MajorMinorPatch
 branches:
   main:
     tag: ''
@@ -41,10 +41,3 @@ branches:
 ignore:
   sha: []
 merge-message-formats: {}
-format:
-  MajorMinorPatch: '{Major}.{Minor}.{Patch}'
-  SemVer: '{Major}.{Minor}.{Patch}-{PreReleaseTag}'
-  FullSemVer: '{Major}.{Minor}.{Patch}-{PreReleaseTag}+{BuildMetaData}'
-  AssemblySemVer: '{Major}.{Minor}.{Patch}.0'
-  AssemblyFileSemVer: '{Major}.{Minor}.{Patch}.0'
-  InformationalVersion: '{Major}.{Minor}.{Patch}-{PreReleaseTag}+{BuildMetaData.Branch}.{Sha}'

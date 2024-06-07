@@ -1,0 +1,46 @@
+name: Versioning
+
+on:
+  push:
+    branches:
+      - '**'  # Запускать на всех ветках
+
+jobs:
+  version:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ vars.DOTNET_VERSION }}
+
+      - name: Setup GitVersion
+        uses: gittools/actions/gitversion/setup@v1.1.1
+        with:
+          versionSpec: '5.x'
+
+      - name: Use GitVersion
+        id: gitversion
+        run: dotnet-gitversion /output json /output buildserver
+
+      - name: Replace version in csproj
+        run: |
+          version=${{ steps.gitversion.outputs['GitVersion.FullSemVer'] }}
+          echo "Determined version: $version"
+          sed -i "s|<Version>.*</Version>|<Version>$version</Version>|" src/2048Game/2048Game.csproj
+          sed -i "s|<AssemblyVersion>.*</AssemblyVersion>|<AssemblyVersion>$version</AssemblyVersion>|" src/2048Game/2048Game.csproj
+          sed -i "s|<FileVersion>.*</FileVersion>|<FileVersion>$version</FileVersion>|" src/2048Game/2048Game.csproj
+
+      - name: Commit and Push changes
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add src/2048Game/2048Game.csproj
+          git commit -m "Update version to ${{ steps.gitversion.outputs['GitVersion.FullSemVer'] }}"
+          git push origin HEAD:${{ github.ref }}
