@@ -46,7 +46,7 @@ jobs:
         run: |
           dotnet test --no-restore --configuration Release --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=coverage/
           dotnet tool install --global dotnet-reportgenerator-globaltool
-          reportgenerator -reports:coverage/coverage.cobertura.xml -targetdir:coverage/report -reporttypes:Html
+          reportgenerator -reports:tests/2048Game.Tests/coverage/coverage.cobertura.xml -targetdir:coverage/report -reporttypes:Html
 
       - name: Upload coverage report
         if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop' }}
@@ -61,6 +61,6 @@ jobs:
         uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          files: coverage/coverage.cobertura.xml
+          files: tests/2048Game.Tests/coverage/coverage.cobertura.xml
           flags: unittests
           name: codecov-umbrella

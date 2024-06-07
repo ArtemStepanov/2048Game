@@ -27,12 +27,6 @@ jobs:
         id: gitversion
         run: dotnet-gitversion /output buildserver
 
-      - name: Replace version in csproj
-        run: |
-          sed -i "s|<Version>.*</Version>|<Version>${{ env.GitVersion_SemVer }}</Version>|" src/2048Game/2048Game.csproj
-          sed -i "s|<AssemblyVersion>.*</AssemblyVersion>|<AssemblyVersion>${{ env.GitVersion_AssemblySemVer }}</AssemblyVersion>|" src/2048Game/2048Game.csproj
-          sed -i "s|<FileVersion>.*</FileVersion>|<FileVersion>${{ env.GitVersion_AssemblySemFileVer }}</FileVersion>|" src/2048Game/2048Game.csproj
-
       - name: Commit and Tag changes
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -40,11 +34,8 @@ jobs:
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git add src/2048Game/2048Game.csproj
-          git commit -m "Update version to ${{ env.GitVersion_SemVer }}"
           git tag v${{ env.GitVersion_SemVer }}
           git remote set-url origin https://x-access-token:${{ env.PERSONAL_ACCESS_TOKEN }}@github.com/${{ github.repository }}
-          git push origin HEAD:${{ github.ref }}
           git push origin v${{ steps.gitversion.outputs.SemVer }}
 
       - name: Cache NuGet packages
