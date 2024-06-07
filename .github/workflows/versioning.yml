@@ -1,19 +1,28 @@
-name: Create Release
+name: Versioning
 
 on:
+  pull_request:
+    branches:
+      - main
+      - develop
   workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag changes'
+        type: boolean
+        required: false
+        default: false
 
 jobs:
-  release:
+  versioning:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Set up .NET
+      - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ vars.DOTNET_VERSION }}
@@ -30,27 +39,10 @@ jobs:
         run: dotnet restore
 
       - name: Build
-        run: dotnet build --configuration Release --no-restore
+        run: dotnet build --no-restore --configuration Release
 
-      - name: Quick tests run
-        run: dotnet test --configuration Release --no-restore
-
-      - name: Publish
-        run: dotnet publish src/2048Game/2048Game.csproj --configuration Release --no-restore --output ./output
-
-      - name: Create release artifact (zip)
-        run: |
-          zip -r 2048Game.zip ./output
-
-      - name: Create Release
-        uses: softprops/action-gh-release@v2
-        with:
-          files: ./2048Game.zip
-          tag_name: v${{ env.GitVersion_SemVer }}
-          name: Release ${{ env.GitVersion_SemVer }}
-          body_path: ${{ github.workspace }}/releases/release-notes-${{ env.GitVersion_SemVer }}.md
-
-      - name: Commit and Tag changes
+      - name: Tag changes
+        if: ${{ inputs.tag == true || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PERSONAL_ACCESS_TOKEN: ${{ secrets.PAT }}
