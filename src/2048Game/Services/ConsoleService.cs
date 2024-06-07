@@ -3,6 +3,10 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace _2048Game.Services;
 
+/// <summary>
+/// This class and interface are used to abstract the Console interaction
+/// and to mock it in the unit tests to increase overall coverage.
+/// </summary>
 [ExcludeFromCodeCoverage]
 public sealed class ConsoleService : IConsoleService
 {

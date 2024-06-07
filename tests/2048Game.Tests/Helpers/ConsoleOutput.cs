@@ -1,7 +1,7 @@
 ﻿namespace _2048Game.Tests.Helpers;
 
 /// <summary>
-///     Helper class to capture console output for testing
+/// Helper class to capture console output for testing
 /// </summary>
 public sealed class ConsoleOutput : IDisposable
 {
