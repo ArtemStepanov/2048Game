@@ -27,7 +27,7 @@ jobs:
 
       - name: Use GitVersion
         id: gitversion
-        run: gitversion /output buildserver
+        run: dotnet-gitversion /output buildserver
 
       - name: Cache NuGet packages
         uses: actions/cache@v4
