@@ -1,0 +1,50 @@
+assembly-versioning-scheme: MajorMinorPatch
+mode: ContinuousDelivery
+branches:
+  main:
+    tag: ''
+    increment: Patch
+    prevent-increment-of-merged-branch-version: true
+    track-merge-target: false
+    regex: ^main$
+    source-branches: ['develop']
+    is-mainline: true
+  develop:
+    tag: 'beta'
+    increment: Minor
+    prevent-increment-of-merged-branch-version: false
+    track-merge-target: false
+    regex: ^develop$
+    source-branches: ['feature', 'main']
+    is-mainline: false
+  feature:
+    tag: 'feature'
+    increment: Inherit
+    prevent-increment-of-merged-branch-version: false
+    track-merge-target: false
+    regex: ^feature[/-]
+    source-branches: ['develop']
+  release:
+    tag: 'rc'
+    increment: None
+    prevent-increment-of-merged-branch-version: true
+    track-merge-target: false
+    regex: ^release[/-]
+    source-branches: ['develop']
+  hotfix:
+    tag: 'hotfix'
+    increment: Patch
+    prevent-increment-of-merged-branch-version: false
+    track-merge-target: false
+    regex: ^hotfix[/-]
+    source-branches: ['main', 'develop']
+ignore:
+  sha: []
+merge-message-formats: {}
+format:
+  MajorMinorPatch: '{Major}.{Minor}.{Patch}'
+  SemVer: '{Major}.{Minor}.{Patch}-{PreReleaseTag}'
+  FullSemVer: '{Major}.{Minor}.{Patch}-{PreReleaseTag}+{BuildMetaData}'
+  AssemblySemVer: '{Major}.{Minor}.{Patch}.0'
+  AssemblyFileSemVer: '{Major}.{Minor}.{Patch}.0'
+  InformationalVersion: '{Major}.{Minor}.{Patch}-{PreReleaseTag}+{BuildMetaData.Branch}.{Sha}'

@@ -42,11 +42,9 @@ jobs:
 
       - name: Replace version in csproj
         run: |
-          version=${{ steps.gitversion.outputs['GitVersion.FullSemVer'] }}
-          echo "Determined version: $version"
-          sed -i "s|<Version>.*</Version>|<Version>$version</Version>|" src/2048Game/2048Game.csproj
-          sed -i "s|<AssemblyVersion>.*</AssemblyVersion>|<AssemblyVersion>$version</AssemblyVersion>|" src/2048Game/2048Game.csproj
-          sed -i "s|<FileVersion>.*</FileVersion>|<FileVersion>$version</FileVersion>|" src/2048Game/2048Game.csproj
+          sed -i "s|<Version>.*</Version>|<Version>${{ env.GitVersion_MajorMinorPatch }}</Version>|" src/2048Game/2048Game.csproj
+          sed -i "s|<AssemblyVersion>.*</AssemblyVersion>|<AssemblyVersion>${{ env.GitVersion_AssemblySemVer }}</AssemblyVersion>|" src/2048Game/2048Game.csproj
+          sed -i "s|<FileVersion>.*</FileVersion>|<FileVersion>${{ env.GitVersion_AssemblySemFileVer }}</FileVersion>|" src/2048Game/2048Game.csproj
 
       - name: Build
         run: dotnet build --configuration Release --no-restore
@@ -79,6 +77,6 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: ./2048Game.zip
-          tag_name: v${{ steps.gitversion.outputs['GitVersion.FullSemVer'] }}
-          name: Release ${{ steps.gitversion.outputs['GitVersion.FullSemVer'] }}
+          tag_name: v${{ env.GitVersion_SemVer }}
+          name: Release ${{ env.GitVersion_FullSemVer }}
           body_path: ${{ github.workspace }}/release-notes.md
