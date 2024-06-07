@@ -50,16 +50,37 @@ jobs:
       - name: Publish
         run: dotnet publish --configuration Release --no-restore --output ./output
 
-      - name: Create release artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: 2048Game
-          path: ./output
+      # - name: Create release artifact
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: 2048Game
+      #     path: ./output
 
-      - name: Create Tag
+      # - name: Create Tag
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   run: |
+      #     version=${{ steps.gitversion.outputs.FullSemVer }}
+      #     git tag v$version
+      #     git push origin v$version
+
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          version=${{ steps.gitversion.outputs.FullSemVer }}
-          git tag v$version
-          git push origin v$version
+        with:
+          tag_name: v${{ steps.gitversion.outputs.FullSemVer }}
+          release_name: Release ${{ steps.gitversion.outputs.FullSemVer }}
+          draft: false
+          prerelease: false
+
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./output
+          asset_name: 2048Game.zip
+          asset_content_type: application/zip
