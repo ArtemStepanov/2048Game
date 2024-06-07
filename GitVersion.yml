@@ -30,7 +30,7 @@ branches:
     prevent-increment-of-merged-branch-version: true
     track-merge-target: false
     regex: ^release[/-]
-    source-branches: ['develop']
+    source-branches: ['develop', 'main']
   hotfix:
     tag: 'hotfix'
     increment: Patch
