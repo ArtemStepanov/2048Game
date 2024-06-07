@@ -20,11 +20,6 @@ public sealed class RenderServiceTests : IDisposable
         _consoleOutput = new ConsoleOutput();
     }
 
-    public void Dispose()
-    {
-        _consoleOutput.Dispose();
-    }
-
     [Fact]
     public void RenderBoard_Displays_Correct_Output()
     {
@@ -59,7 +54,7 @@ public sealed class RenderServiceTests : IDisposable
 
                                 """;
 
-        Assert.Equal(expected, output);
+        output.ShouldBe(expected);
         _mockConsoleService.Verify(c => c.Clear(), Times.Once);
         _mockConsoleService.Verify(c => c.WriteLine(It.IsAny<string>()), Times.Exactly(11));
         _mockConsoleService.Verify(c => c.Write(It.IsAny<string>()), Times.Exactly(20));
@@ -73,7 +68,7 @@ public sealed class RenderServiceTests : IDisposable
         _renderService.RenderGameOver();
         var output = _consoleOutput.GetOutput();
 
-        Assert.Equal("Game Over!" + Environment.NewLine, output);
+        output.ShouldBe("Game Over!" + Environment.NewLine);
         _mockConsoleService.Verify(c => c.WriteLine(It.IsAny<string>()), Times.Once);
     }
 
@@ -88,9 +83,14 @@ public sealed class RenderServiceTests : IDisposable
 
         var result = _renderService.ConfirmAction("Restart game?");
 
-        Assert.Equal(expected, result);
+        result.ShouldBe(expected);
         _mockConsoleService.Verify(c => c.ReadKey(true), Times.AtLeastOnce);
         _mockConsoleService.Verify(c => c.SetCursorPosition(It.IsAny<int>(), It.IsAny<int>()), Times.Exactly(2));
         _mockConsoleService.Verify(c => c.Write(It.IsAny<string>()), Times.Exactly(2));
+    }
+
+    public void Dispose()
+    {
+        _consoleOutput.Dispose();
     }
 }

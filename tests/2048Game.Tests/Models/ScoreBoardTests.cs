@@ -9,12 +9,12 @@ public sealed class ScoreBoardTests
     {
         var scoreBoard = new ScoreBoard();
         scoreBoard.AddScore(10);
-        Assert.Equal(10, scoreBoard.Score);
-        Assert.Equal(10, scoreBoard.BestScore);
+        scoreBoard.Score.ShouldBe(10);
+        scoreBoard.BestScore.ShouldBe(10);
 
         scoreBoard.AddScore(5);
-        Assert.Equal(15, scoreBoard.Score);
-        Assert.Equal(15, scoreBoard.BestScore);
+        scoreBoard.Score.ShouldBe(15);
+        scoreBoard.BestScore.ShouldBe(15);
     }
 
     [Fact]
@@ -23,7 +23,7 @@ public sealed class ScoreBoardTests
         var scoreBoard = new ScoreBoard();
         scoreBoard.AddScore(10);
         scoreBoard.Reset();
-        Assert.Equal(0, scoreBoard.Score);
+        scoreBoard.Score.ShouldBe(0);
     }
 
     [Fact]
@@ -32,7 +32,7 @@ public sealed class ScoreBoardTests
         var scoreBoard = new ScoreBoard();
         scoreBoard.AddScore(10);
         scoreBoard.Reset();
-        Assert.Equal(0, scoreBoard.Score);
-        Assert.Equal(10, scoreBoard.BestScore);
+        scoreBoard.Score.ShouldBe(0);
+        scoreBoard.BestScore.ShouldBe(10);
     }
 }

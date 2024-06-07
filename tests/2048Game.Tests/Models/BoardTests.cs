@@ -9,7 +9,7 @@ public sealed class BoardTests
     public void Board_Initializes_With_Two_Tiles()
     {
         var board = new Board();
-        Assert.Equal(2, board.Tiles.Count);
+        board.Tiles.Count.ShouldBe(2);
     }
 
     [Theory]
@@ -21,8 +21,8 @@ public sealed class BoardTests
     public void Board_Creates_With_Valid_Size(int size)
     {
         var board = new Board(size);
-        Assert.Equal(size, board.Size);
-        Assert.Equal(2, board.Tiles.Count);
+        board.Size.ShouldBe(size);
+        board.Tiles.Count.ShouldBe(2);
     }
 
     [Fact]
@@ -30,7 +30,7 @@ public sealed class BoardTests
     {
         var board = new Board();
         board.AddRandomTile();
-        Assert.Equal(3, board.Tiles.Count);
+        board.Tiles.Count.ShouldBe(3);
     }
 
     [Fact]
@@ -39,7 +39,7 @@ public sealed class BoardTests
         var board = new Board();
         var tile = board.Tiles.First();
         board.RemoveTile(tile);
-        Assert.Single(board.Tiles);
+        board.Tiles.ShouldHaveSingleItem();
     }
 
     [Theory]
@@ -48,7 +48,7 @@ public sealed class BoardTests
     public void Board_Throws_Exception_For_Invalid_Size(int size)
     {
         var ex = Assert.Throws<ArgumentException>(() => new Board(size));
-        Assert.Equal("Board size must be between 4 and 8.", ex.Message);
+        ex.Message.ShouldBe("Board size must be between 4 and 8.");
     }
 
     [Fact]
@@ -56,8 +56,8 @@ public sealed class BoardTests
     {
         var board = new Board();
         board.Reset(6);
-        Assert.Equal(2, board.Tiles.Count);
-        Assert.Equal(6, board.Size);
+        board.Tiles.Count.ShouldBe(2);
+        board.Size.ShouldBe(6);
     }
 
     [Fact]
@@ -65,7 +65,7 @@ public sealed class BoardTests
     {
         var board = new Board();
         board.AddRandomTile(); // Adding a third tile to ensure there are empty spaces
-        Assert.True(board.CanMove());
+        board.CanMove().ShouldBeTrue();
     }
 
     [Fact]
@@ -80,7 +80,7 @@ public sealed class BoardTests
         AddTileUsingReflection(board, tile1);
         AddTileUsingReflection(board, tile2);
 
-        Assert.True(board.CanMove());
+        board.CanMove().ShouldBeTrue();
     }
 
     [Fact]
@@ -99,7 +99,7 @@ public sealed class BoardTests
             }
         }
 
-        Assert.False(board.CanMove());
+        board.CanMove().ShouldBeFalse();
     }
 
     private static void ClearTiles(Board board)

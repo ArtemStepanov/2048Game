@@ -3,8 +3,6 @@ using System.Text.Json.Serialization;
 
 namespace _2048Game.Models;
 
-// Interface introduced to allow for mocking in tests
-
 public sealed class Board : IBoard
 {
     private readonly Random _random = new();
@@ -15,7 +13,7 @@ public sealed class Board : IBoard
 
     public Board(int size = 4)
     {
-        // For the possible difficulty feature implementation. Not used ATM
+        // Note: for the possible difficulty feature implementation. Not used ATM
         if (size is < 4 or > 8)
         {
             throw new ArgumentException("Board size must be between 4 and 8.");
