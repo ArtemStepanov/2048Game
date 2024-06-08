@@ -37,7 +37,7 @@ branches:
     pre-release-weight: 30000
   feature:
     regex: ^feature(s)?[/-]
-    mode: ContinuousDelivery
+    mode: ContinuousDeployment
     tag: feature.{BranchName}
     increment: Patch
     prevent-increment-of-merged-branch-version: false
