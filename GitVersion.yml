@@ -1,9 +1,9 @@
 branches:
   main:
-    regex: ^master$|^main$
+    regex: ^main$
     mode: ContinuousDelivery
     tag: ''
-    increment: Patch
+    increment: None
     prevent-increment-of-merged-branch-version: false
     track-merge-target: false
     source-branches: [ 'develop', 'release' ]
@@ -15,7 +15,7 @@ branches:
     regex: ^dev(elop)?(ment)?$
     mode: ContinuousDeployment
     tag: alpha
-    increment: Minor
+    increment: Patch
     prevent-increment-of-merged-branch-version: false
     track-merge-target: true
     source-branches: []
@@ -27,7 +27,7 @@ branches:
     regex: ^release(s)?[/-]
     mode: ContinuousDelivery
     tag: rc
-    increment: None
+    increment: Minor
     prevent-increment-of-merged-branch-version: true
     track-merge-target: false
     source-branches: [ 'develop', 'main', 'support', 'release' ]
@@ -39,7 +39,7 @@ branches:
     regex: ^feature(s)?[/-]
     mode: ContinuousDeployment
     tag: feature.{BranchName}
-    increment: Inherit
+    increment: Patch
     prevent-increment-of-merged-branch-version: false
     track-merge-target: false
     source-branches: [ 'develop', 'main', 'release', 'feature', 'support', 'hotfix' ]
