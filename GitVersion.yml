@@ -25,13 +25,6 @@ branches:
     regex: ^feature[/-]
     source-branches: ['develop']
     tracks-release-branches: true
-  release:
-    tag: 'rc'
-    increment: Major
-    prevent-increment-of-merged-branch-version: true
-    track-merge-target: false
-    regex: ^release[/-]
-    source-branches: ['develop', 'main']
   hotfix:
     tag: 'hotfix'
     increment: Patch
