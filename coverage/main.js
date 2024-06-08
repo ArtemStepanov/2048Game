@@ -221,16 +221,15 @@ var assemblies = [
   {
     "name": "2048Game",
     "classes": [
-      { "name": "_2048Game.Core.Exceptions.GameExitException", "rp": "2048Game_GameExitException.html", "cl": 1, "ucl": 0, "cal": 1, "tl": 3, "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
-      { "name": "_2048Game.Core.Extensions.StringExtensions", "rp": "2048Game_StringExtensions.html", "cl": 1, "ucl": 0, "cal": 1, "tl": 11, "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
+      { "name": "_2048Game.Core.Exceptions.GameExitException", "rp": "2048Game_GameExitException.html", "cl": 1, "ucl": 0, "cal": 1, "tl": 4, "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
       { "name": "_2048Game.Core.Mapping", "rp": "2048Game_Mapping.html", "cl": 38, "ucl": 0, "cal": 38, "tl": 47, "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
-      { "name": "_2048Game.Models.Board", "rp": "2048Game_Board.html", "cl": 31, "ucl": 0, "cal": 31, "tl": 79, "cb": 19, "tb": 22, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
+      { "name": "_2048Game.Models.Board", "rp": "2048Game_Board.html", "cl": 31, "ucl": 0, "cal": 31, "tl": 81, "cb": 19, "tb": 22, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
       { "name": "_2048Game.Models.ScoreBoard", "rp": "2048Game_ScoreBoard.html", "cl": 8, "ucl": 0, "cal": 8, "tl": 21, "cb": 2, "tb": 2, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
       { "name": "_2048Game.Models.Tile", "rp": "2048Game_Tile.html", "cl": 6, "ucl": 0, "cal": 6, "tl": 19, "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
       { "name": "_2048Game.Services.GameService", "rp": "2048Game_GameService.html", "cl": 36, "ucl": 0, "cal": 36, "tl": 82, "cb": 8, "tb": 8, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
       { "name": "_2048Game.Services.InputService", "rp": "2048Game_InputService.html", "cl": 18, "ucl": 0, "cal": 18, "tl": 57, "cb": 10, "tb": 10, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
       { "name": "_2048Game.Services.RenderService", "rp": "2048Game_RenderService.html", "cl": 33, "ucl": 0, "cal": 33, "tl": 71, "cb": 21, "tb": 22, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
-      { "name": "_2048Game.Services.StorageService", "rp": "2048Game_StorageService.html", "cl": 29, "ucl": 0, "cal": 29, "tl": 72, "cb": 12, "tb": 12, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
+      { "name": "_2048Game.Services.StorageService", "rp": "2048Game_StorageService.html", "cl": 30, "ucl": 0, "cal": 30, "tl": 75, "cb": 12, "tb": 12, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
       { "name": "_2048Game.Services.TileControlService", "rp": "2048Game_TileControlService.html", "cl": 39, "ucl": 2, "cal": 41, "tl": 93, "cb": 19, "tb": 21, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
     ]},
 ];
