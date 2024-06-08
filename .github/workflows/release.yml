@@ -62,4 +62,4 @@ jobs:
           files: ./2048Game.zip
           tag_name: v${{ env.GitVersion_SemVer }}
           name: Release ${{ env.GitVersion_SemVer }}
-          body: ${{ github.event.inputs.release-notes }}
+          body: ${{ github.event.inputs.release-notes || github.event.release.body }}
