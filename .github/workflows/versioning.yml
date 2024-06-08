@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - develop
       - hotfix/**
       - release/**
   workflow_dispatch:
