@@ -4,7 +4,7 @@ branches:
     mode: ContinuousDelivery
     tag: ''
     increment: Patch
-    prevent-increment-of-merged-branch-version: true
+    prevent-increment-of-merged-branch-version: false
     track-merge-target: false
     source-branches: [ 'develop', 'release' ]
     tracks-release-branches: false
@@ -41,6 +41,7 @@ branches:
     tag: feature.{BranchName}
     increment: Inherit
     prevent-increment-of-merged-branch-version: false
+    tag-number-pattern: '[/-](?<number>\d+)[-/]'
     track-merge-target: false
     source-branches: [ 'develop', 'main', 'release', 'feature', 'support', 'hotfix' ]
     tracks-release-branches: false
