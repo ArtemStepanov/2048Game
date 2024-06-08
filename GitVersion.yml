@@ -18,7 +18,7 @@ branches:
     source-branches: ['feature', 'main']
     is-mainline: false
   feature:
-    tag: 'feature'
+    tag: 'feature.{BranchName}'
     increment: Inherit
     prevent-increment-of-merged-branch-version: false
     track-merge-target: false
