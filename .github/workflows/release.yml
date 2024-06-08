@@ -2,9 +2,11 @@ name: Create Release
 
 on:
   workflow_dispatch:
-  push: 
-    branches:
-      - main
+    inputs:
+      release-notes:
+        description: 'Release notes'
+        required: true
+        type: string
 
 jobs:
   release:
@@ -51,4 +53,4 @@ jobs:
           files: ./2048Game.zip
           tag_name: v${{ env.GitVersion_SemVer }}
           name: Release ${{ env.GitVersion_SemVer }}
-          body_path: ${{ github.workspace }}/releases/release-notes-${{ env.GitVersion_SemVer }}.md
+          body: ${{ github.event.inputs.release-notes }}
