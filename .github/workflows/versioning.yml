@@ -6,13 +6,8 @@ on:
       - main
       - develop
       - hotfix/**
+      - release/**
   workflow_dispatch:
-    inputs:
-      tag:
-        description: 'Tag changes'
-        type: boolean
-        required: false
-        default: false
 
 jobs:
   versioning:
@@ -43,7 +38,6 @@ jobs:
         run: dotnet build --no-restore --configuration Release
 
       - name: Tag changes
-        if: (inputs.tag == true || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
