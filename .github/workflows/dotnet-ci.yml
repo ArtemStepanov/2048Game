@@ -8,6 +8,7 @@ on:
       - develop
       - feature/**
       - hotfix/**
+      - release/**
 
 jobs:
   build-test:
@@ -40,9 +41,15 @@ jobs:
 
       - name: Run tests with coverage
         run: |
-          dotnet test --no-restore --configuration Release --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=coverage/
+          dotnet test --no-restore -c Release -v minimal --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=coverage/
           dotnet tool install --global dotnet-reportgenerator-globaltool
           reportgenerator -reports:tests/2048Game.Tests/coverage/coverage.cobertura.xml -targetdir:coverage/report -reporttypes:Html
+
+      - name: Publish Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v2.16.1
+        if: failure() || success()
+        with:
+          files: ./**/*.trx
 
       - name: Deploy to GitHub Pages
         if: startsWith(github.ref, 'refs/heads/main')
