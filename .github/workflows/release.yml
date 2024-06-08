@@ -7,8 +7,10 @@ on:
         description: 'Release notes'
         required: true
         type: string
-  release:
-    types: [created]
+
+permissions:
+  contents: write
+  pull-requests: write
 
 jobs:
   release:
@@ -32,6 +34,16 @@ jobs:
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
           restore-keys: |
             ${{ runner.os }}-nuget-
+
+      - name: Create and switch to release branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+          git checkout -b release/temp
+          git push origin release/temp
+          git checkout release/temp
 
       - name: Restore dependencies
         run: dotnet restore
@@ -62,4 +74,11 @@ jobs:
           files: ./2048Game.zip
           tag_name: v${{ env.GitVersion_SemVer }}
           name: Release ${{ env.GitVersion_SemVer }}
-          body: ${{ github.event.inputs.release-notes || github.event.release.body }}
+          body: ${{ github.event.inputs.release-notes }}
+
+      - name: Delete temporary release branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git push origin --delete release/temp
+          git branch -D release/temp
