@@ -36,28 +36,28 @@ jobs:
       - name: Quick tests run
         run: dotnet test --configuration Release --no-restore
 
-      - name: Publish Windows x64
-        run: dotnet publish src/2048Game/2048Game.csproj --configuration Release --no-restore --output ./output/win-x64 --self-contained --runtime win-x64
+      - name: Publish Windows
+        run: dotnet publish src/2048Game/2048Game.csproj --configuration Release --output ./output/win-x86 --self-contained --runtime win-x86
 
-      - name: Publish Linux x64
-        run: dotnet publish src/2048Game/2048Game.csproj --configuration Release --no-restore --output ./output/linux-x64 --self-contained --runtime linux-x64
+      - name: Publish Linux
+        run: dotnet publish src/2048Game/2048Game.csproj --configuration Release --output ./output/linux-x64 --self-contained --runtime linux-x64
 
-      - name: Publish macOS x64
-        run: dotnet publish src/2048Game/2048Game.csproj --configuration Release --no-restore --output ./output/osx-x64 --self-contained --runtime osx-x64
+      - name: Publish macOS
+        run: dotnet publish src/2048Game/2048Game.csproj --configuration Release --output ./output/osx-arm64 --self-contained --runtime osx-arm64
 
       - name: Create release artifact (zip)
         run: |
-          zip -r 2048Game-win-x64.zip ./output/win-x64
+          zip -r 2048Game-win-x86.zip ./output/win-x86
           zip -r 2048Game-linux-x64.zip ./output/linux-x64
-          zip -r 2048Game-osx-x64.zip ./output/osx-x64
+          zip -r 2048Game-osx-arm64.zip ./output/osx-arm64
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            ./2048Game-win-x64.zip
+            ./2048Game-win-x86.zip
             ./2048Game-linux-x64.zip
-            ./2048Game-osx-x64.zip
+            ./2048Game-osx-arm64.zip
           tag_name: ${{github.event.release.tag_name}}
           name: Release ${{github.event.release.tag_name}}
           body: ${{ github.event.release.body }}
