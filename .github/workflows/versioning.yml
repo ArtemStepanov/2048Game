@@ -1,0 +1,49 @@
+name: Versioning
+
+on:
+  push:
+    branches:
+      - main
+      - release/**
+  workflow_dispatch:
+
+jobs:
+  versioning:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ vars.DOTNET_VERSION }}
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --no-restore --configuration Release
+
+      - name: Tag changes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          if [ $(git tag -l "v${{ env.GitVersion_SemVer }}") ]; then
+            echo "Tag v${{ env.GitVersion_SemVer }} already exists"
+          else
+            git tag v${{ env.GitVersion_SemVer }}
+            git push origin v${{ env.GitVersion_SemVer }}
+          fi

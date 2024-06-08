@@ -1,4 +1,5 @@
-﻿using _2048Game.Models;
+﻿using _2048Game.Core.Extensions;
+using _2048Game.Models;
 using _2048Game.Models.Abstractions;
 using _2048Game.Services.Abstractions;
 using System.Text.Json;
@@ -38,13 +39,13 @@ public sealed class StorageService : IStorageService
         Board? boardSavedData = null;
         if (File.Exists(_saveFilePath))
         {
-            boardSavedData = ReadJsonFile<Board>(_saveFilePath);
+            boardSavedData = _saveFilePath.ReadJsonFile<Board>();
         }
 
         ScoreBoard? scoreBoardSavedData = null;
         if (File.Exists(_scoreBoardPath))
         {
-            scoreBoardSavedData = ReadJsonFile<ScoreBoard>(_scoreBoardPath);
+            scoreBoardSavedData = _scoreBoardPath.ReadJsonFile<ScoreBoard>();
         }
 
         return (boardSavedData, scoreBoardSavedData);
@@ -63,14 +64,9 @@ public sealed class StorageService : IStorageService
         }
 
         // Reset score, but not the record score, in the saved file
-        var scoreBoard = ReadJsonFile<ScoreBoard>(_scoreBoardPath)!;
+        var scoreBoard = _scoreBoardPath.ReadJsonFile<ScoreBoard>()!;
 
         scoreBoard.Reset();
         File.WriteAllText(_scoreBoardPath, JsonSerializer.Serialize(scoreBoard));
-    }
-
-    private static T? ReadJsonFile<T>(string path) where T : class
-    {
-        return JsonSerializer.Deserialize<T>(File.ReadAllText(path));
     }
 }

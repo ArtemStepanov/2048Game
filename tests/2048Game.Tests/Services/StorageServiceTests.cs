@@ -23,7 +23,7 @@ public sealed class StorageServiceTests : IDisposable
     [Fact]
     public void Constructor_Creates_AppData_Directory()
     {
-        Assert.True(Directory.Exists(_tempAppDataPath));
+        Directory.Exists(_tempAppDataPath).ShouldBeTrue();
     }
 
     [Fact]
@@ -31,7 +31,7 @@ public sealed class StorageServiceTests : IDisposable
     {
         var appDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "2048Game");
         _ = new StorageService(string.Empty);
-        Assert.True(Directory.Exists(appDataPath));
+        Directory.Exists(appDataPath).ShouldBeTrue();
     }
 
     [Fact]
@@ -45,8 +45,8 @@ public sealed class StorageServiceTests : IDisposable
 
         _storageService.SaveGame(mockBoard.Object, scoreBoard);
 
-        Assert.True(File.Exists(_saveFilePath));
-        Assert.True(File.Exists(_scoreBoardPath));
+        File.Exists(_saveFilePath).ShouldBeTrue();
+        File.Exists(_scoreBoardPath).ShouldBeTrue();
     }
 
     [Fact]
@@ -64,15 +64,13 @@ public sealed class StorageServiceTests : IDisposable
 
         var (loadedBoard, loadedScoreBoard) = _storageService.LoadGame();
 
-        Assert.NotNull(loadedBoard);
-        Assert.NotNull(loadedScoreBoard);
-        Assert.Equal(board.Size, loadedBoard.Size);
-        Assert.Equal(scoreBoard.Score, loadedScoreBoard.Score);
-        Assert.Equal(scoreBoard.BestScore, loadedScoreBoard.BestScore);
-        Assert.Equal(
-            board.Tiles.Select(t => new { t.Row, t.Column, t.Value }),
-            loadedBoard.Tiles.Select(t => new { t.Row, t.Column, t.Value })
-        );
+        loadedBoard.ShouldNotBeNull();
+        loadedScoreBoard.ShouldNotBeNull();
+        loadedBoard.Size.ShouldBe(board.Size);
+        loadedScoreBoard.Score.ShouldBe(scoreBoard.Score);
+        loadedScoreBoard.BestScore.ShouldBe(scoreBoard.BestScore);
+        loadedBoard.Tiles.Select(t => new { t.Row, t.Column, t.Value })
+            .ShouldBe(board.Tiles.Select(t => new { t.Row, t.Column, t.Value }));
     }
 
     [Fact]
@@ -89,13 +87,13 @@ public sealed class StorageServiceTests : IDisposable
 
         _storageService.ResetGameSave();
 
-        Assert.False(File.Exists(_saveFilePath));
-        Assert.True(File.Exists(_scoreBoardPath));
+        File.Exists(_saveFilePath).ShouldBeFalse();
+        File.Exists(_scoreBoardPath).ShouldBeTrue();
 
         var loadedScoreBoard = JsonSerializer.Deserialize<ScoreBoard>(File.ReadAllText(_scoreBoardPath));
-        Assert.NotNull(loadedScoreBoard);
-        Assert.Equal(0, loadedScoreBoard.Score);
-        Assert.Equal(scoreBoard.BestScore, loadedScoreBoard.BestScore);
+        loadedScoreBoard.ShouldNotBeNull();
+        loadedScoreBoard.Score.ShouldBe(0);
+        loadedScoreBoard.BestScore.ShouldBe(scoreBoard.BestScore);
     }
 
     [Fact]
@@ -106,8 +104,8 @@ public sealed class StorageServiceTests : IDisposable
 
         _storageService.ResetGameSave();
 
-        Assert.False(File.Exists(_saveFilePath));
-        Assert.False(File.Exists(_scoreBoardPath));
+        File.Exists(_saveFilePath).ShouldBeFalse();
+        File.Exists(_scoreBoardPath).ShouldBeFalse();
     }
 
     public void Dispose()

@@ -37,8 +37,8 @@ public sealed class InputServiceTests : IDisposable
         _mockConsoleService.SetupSequence(c => c.ReadKey(true))
             .Returns(new ConsoleKeyInfo('\0', key, false, false, false));
 
-        Assert.True(_inputService.HandleInput());
-        Assert.Empty(_consoleOutput.GetOutput());
+        _inputService.HandleInput().ShouldBeTrue();
+        _consoleOutput.GetOutput().ShouldBeEmpty();
 
         _mockGameService.Verify(g => g.ProcessStep(direction), Times.Once);
     }
@@ -50,7 +50,7 @@ public sealed class InputServiceTests : IDisposable
         _mockConsoleService.SetupSequence(c => c.ReadKey(true))
             .Returns(new ConsoleKeyInfo('R', ConsoleKey.R, false, false, false));
 
-        Assert.True(_inputService.HandleInput());
+        _inputService.HandleInput().ShouldBeTrue();
 
         _mockGameService.Verify(g => g.StartNewGame(), Times.Once);
     }
@@ -62,8 +62,8 @@ public sealed class InputServiceTests : IDisposable
         _mockConsoleService.SetupSequence(c => c.ReadKey(true))
             .Returns(new ConsoleKeyInfo('Q', ConsoleKey.Q, false, false, false));
 
-        Assert.False(_inputService.HandleInput());
-        Assert.Equal("Goodbye!" + Environment.NewLine, _consoleOutput.GetOutput());
+        _inputService.HandleInput().ShouldBeFalse();
+        _consoleOutput.GetOutput().ShouldBe("Goodbye!" + Environment.NewLine);
 
         _mockGameService.Verify(g => g.SaveGame(), Times.Once);
     }
@@ -75,11 +75,9 @@ public sealed class InputServiceTests : IDisposable
         _mockConsoleService.SetupSequence(c => c.ReadKey(true))
             .Returns(new ConsoleKeyInfo('A', invalidKey, false, false, false));
 
-        Assert.True(_inputService.HandleInput());
+        _inputService.HandleInput().ShouldBeTrue();
 
-        Assert.Equal(
-            "Invalid input. Use arrow keys to move, R to restart, Q to quit." + Environment.NewLine,
-            _consoleOutput.GetOutput()
-        );
+        _consoleOutput.GetOutput()
+            .ShouldBe("Invalid input. Use arrow keys to move, R to restart, Q to quit." + Environment.NewLine);
     }
 }

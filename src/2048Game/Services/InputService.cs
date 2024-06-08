@@ -4,7 +4,7 @@ using _2048Game.Services.Abstractions;
 
 namespace _2048Game.Services;
 
-public class InputService(IGameService gameService, IRenderService renderService, IConsoleService consoleService)
+public sealed class InputService(IGameService gameService, IRenderService renderService, IConsoleService consoleService)
 {
     public bool HandleInput()
     {
