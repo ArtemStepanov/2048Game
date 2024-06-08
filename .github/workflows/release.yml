@@ -52,14 +52,3 @@ jobs:
           tag_name: v${{ env.GitVersion_SemVer }}
           name: Release ${{ env.GitVersion_SemVer }}
           body_path: ${{ github.workspace }}/releases/release-notes-${{ env.GitVersion_SemVer }}.md
-
-      - name: Commit and Tag changes
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PERSONAL_ACCESS_TOKEN: ${{ secrets.PAT }}
-        run: |
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git tag v${{ env.GitVersion_SemVer }}
-          git remote set-url origin https://x-access-token:${{ env.PERSONAL_ACCESS_TOKEN }}@github.com/${{ github.repository }}
-          git push origin v${{ env.GitVersion_SemVer }}

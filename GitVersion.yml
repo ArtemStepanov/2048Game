@@ -3,7 +3,7 @@ assembly-versioning-scheme: MajorMinorPatch
 branches:
   main:
     tag: ''
-    increment: Patch
+    increment: Minor
     prevent-increment-of-merged-branch-version: true
     track-merge-target: false
     regex: ^main$
@@ -11,7 +11,7 @@ branches:
     is-mainline: true
   develop:
     tag: 'beta'
-    increment: Minor
+    increment: Patch
     prevent-increment-of-merged-branch-version: false
     track-merge-target: false
     regex: ^develop$
@@ -27,7 +27,7 @@ branches:
     tracks-release-branches: true
   release:
     tag: 'rc'
-    increment: None
+    increment: Major
     prevent-increment-of-merged-branch-version: true
     track-merge-target: false
     regex: ^release[/-]
