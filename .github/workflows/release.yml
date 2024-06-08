@@ -1,0 +1,81 @@
+name: Release
+
+on:
+  workflow_dispatch:
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ vars.DOTNET_VERSION }}
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Quick tests run
+        run: dotnet test --configuration Release --no-restore
+
+      - name: Publish Windows
+        run: dotnet publish src/2048Game/2048Game.csproj --configuration Release --output ./output/win-x86 --self-contained --runtime win-x86
+
+      - name: Publish Linux
+        run: dotnet publish src/2048Game/2048Game.csproj --configuration Release --output ./output/linux-x64 --self-contained --runtime linux-x64
+
+      - name: Publish macOS
+        run: dotnet publish src/2048Game/2048Game.csproj --configuration Release --output ./output/osx-arm64 --self-contained --runtime osx-arm64
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+        
+      - name: Install conventional-changelog-cli
+        run: npm install -g conventional-changelog-cli
+
+      - name: Generate changelog
+        run: conventional-changelog -p angular -i CHANGELOG.md -s
+  
+      - name: Commit changelog
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add CHANGELOG.md
+          git commit -m 'chore(release): update changelog'
+          git push origin HEAD:main
+
+      - name: Create release artifact (zip)
+        run: |
+          zip -r 2048Game-win-x86.zip ./output/win-x86
+          zip -r 2048Game-linux-x64.zip ./output/linux-x64
+          zip -r 2048Game-osx-arm64.zip ./output/osx-arm64
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            ./2048Game-win-x86.zip
+            ./2048Game-linux-x64.zip
+            ./2048Game-osx-arm64.zip
+          tag_name: v${{ env.GitVersion_SemVer }}
+          name: Release v${{ env.GitVersion_SemVer }}
+          body_path: CHANGELOG.md

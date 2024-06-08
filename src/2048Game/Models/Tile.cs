@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace _2048Game.Models;
 
-public class Tile(int row, int column, int value)
+public sealed class Tile(int row, int column, int value)
 {
     public int Row { get; set; } = row;
     public int Column { get; set; } = column;

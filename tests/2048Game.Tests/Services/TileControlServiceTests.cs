@@ -35,9 +35,9 @@ public sealed class TileControlServiceTests
 
         var moved = _service.Move(Direction.Left);
 
-        Assert.True(moved);
-        Assert.Equal(4, tiles[0].Value);
-        Assert.Equal(0, tiles[0].Column);
+        moved.ShouldBeTrue();
+        tiles[0].Value.ShouldBe(4);
+        tiles[0].Column.ShouldBe(0);
         _boardMock.Verify(b => b.RemoveTile(It.IsAny<Tile>()), Times.Once);
     }
 
@@ -60,9 +60,9 @@ public sealed class TileControlServiceTests
 
         var moved = _service.Move(Direction.Right);
 
-        Assert.True(moved);
-        Assert.Equal(4, tiles[1].Value);
-        Assert.Equal(boardSize - 1, tiles[1].Column);
+        moved.ShouldBeTrue();
+        tiles[1].Value.ShouldBe(4);
+        tiles[1].Column.ShouldBe(boardSize - 1);
         _boardMock.Verify(b => b.RemoveTile(It.IsAny<Tile>()), Times.Once);
     }
 
@@ -85,9 +85,9 @@ public sealed class TileControlServiceTests
 
         var moved = _service.Move(Direction.Up);
 
-        Assert.True(moved);
-        Assert.Equal(4, tiles[0].Value);
-        Assert.Equal(0, tiles[0].Row);
+        moved.ShouldBeTrue();
+        tiles[0].Value.ShouldBe(4);
+        tiles[0].Row.ShouldBe(0);
         _boardMock.Verify(b => b.RemoveTile(It.IsAny<Tile>()), Times.Once);
     }
 
@@ -110,9 +110,9 @@ public sealed class TileControlServiceTests
 
         var moved = _service.Move(Direction.Down);
 
-        Assert.True(moved);
-        Assert.Equal(4, tiles[1].Value);
-        Assert.Equal(size - 1, tiles[1].Row);
+        moved.ShouldBeTrue();
+        tiles[1].Value.ShouldBe(4);
+        tiles[1].Row.ShouldBe(size - 1);
         _boardMock.Verify(b => b.RemoveTile(It.IsAny<Tile>()), Times.Once);
     }
 }
