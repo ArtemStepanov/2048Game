@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - develop
+      - hotfix/**
   workflow_dispatch:
     inputs:
       tag:
@@ -42,11 +43,15 @@ jobs:
         run: dotnet build --no-restore --configuration Release
 
       - name: Tag changes
-        if: ${{ inputs.tag == true || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop' }}
+        if: (inputs.tag == true || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git tag v${{ env.GitVersion_SemVer }}
-          git push origin v${{ env.GitVersion_SemVer }}
+          if [ $(git tag -l "v${{ env.GitVersion_SemVer }}") ]; then
+            echo "Tag v${{ env.GitVersion_SemVer }} already exists"
+          else
+            git tag v${{ env.GitVersion_SemVer }}
+            git push origin v${{ env.GitVersion_SemVer }}
+          fi
