@@ -46,6 +46,7 @@ jobs:
           dotnet test --no-restore --configuration Release --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=coverage/
           dotnet tool install --global dotnet-reportgenerator-globaltool
           reportgenerator -reports:tests/2048Game.Tests/coverage/coverage.cobertura.xml -targetdir:coverage/report -reporttypes:Html
+          echo "${{ github.ref_name}}"
 
       - name: Deploy to GitHub Pages
         if: (github.ref_name == 'main' || github.ref_name == 'develop') && matrix.dotnet-version == '${{ vars.DOTNET_VERSION }}'
