@@ -5,6 +5,7 @@ on:
   pull_request:
     branches:
       - main
+      - release/**
 
 jobs:
   qodana:
@@ -13,6 +14,7 @@ jobs:
       contents: write
       pull-requests: write
       checks: write
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
