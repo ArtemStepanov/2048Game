@@ -1,28 +1,14 @@
 ﻿using _2048Game.Core;
-using _2048Game.Core.Exceptions;
 using _2048Game.Services.Abstractions;
 
 namespace _2048Game.Services;
 
-public sealed class InputService(IGameService gameService, IRenderService renderService, IConsoleService consoleService)
+public sealed class InputService(IGameService gameService, IConsoleService consoleService) : IInputService
 {
-    public bool HandleInput()
-    {
-        try
-        {
-            var input = consoleService.ReadKey(true).Key;
-            HandleInput(input);
-            return true;
-        }
-        catch (GameExitException)
-        {
-            consoleService.WriteLine("Goodbye!");
-            return false;
-        }
-    }
 
-    private void HandleInput(ConsoleKey input)
+    public void HandleInput()
     {
+        var input = ListenKey();
         switch (input)
         {
             case ConsoleKey.UpArrow:
@@ -33,25 +19,21 @@ public sealed class InputService(IGameService gameService, IRenderService render
                 break;
 
             case ConsoleKey.R:
-                if (renderService.ConfirmAction("Restart game?"))
-                {
-                    gameService.StartNewGame();
-                }
-
+                gameService.ProcessRestart();
                 break;
 
             case ConsoleKey.Q:
-                if (renderService.ConfirmAction("Quit game?"))
-                {
-                    gameService.SaveGame();
-                    throw new GameExitException();
-                }
-
+                gameService.ProcessExit();
                 break;
 
             default:
                 consoleService.WriteLine("Invalid input. Use arrow keys to move, R to restart, Q to quit.");
                 break;
         }
+    }
+
+    public ConsoleKey ListenKey()
+    {
+        return consoleService.ReadKey(true).Key;
     }
 }

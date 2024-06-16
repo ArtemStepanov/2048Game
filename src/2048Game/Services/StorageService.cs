@@ -1,6 +1,4 @@
-﻿using _2048Game.Core.Extensions;
-using _2048Game.Models;
-using _2048Game.Models.Abstractions;
+﻿using _2048Game.Models;
 using _2048Game.Services.Abstractions;
 using System.Text.Json;
 
@@ -9,7 +7,6 @@ namespace _2048Game.Services;
 public sealed class StorageService : IStorageService
 {
     private readonly string _saveFilePath;
-    private readonly string _scoreBoardPath;
 
     public StorageService(string appDataPath = "")
     {
@@ -18,7 +15,6 @@ public sealed class StorageService : IStorageService
             : appDataPath;
 
         _saveFilePath = Path.Combine(appDataPath, "savegame.json");
-        _scoreBoardPath = Path.Combine(appDataPath, "scoreboard.json");
 
         if (!Directory.Exists(appDataPath))
         {
@@ -26,47 +22,48 @@ public sealed class StorageService : IStorageService
         }
     }
 
-    public void SaveGame(IBoard board, ScoreBoard scoreBoard)
+    public void SaveGame(int[,] tiles, ScoreBoard scoreBoard)
     {
-        var gameData = JsonSerializer.Serialize(board);
-        var scoreData = JsonSerializer.Serialize(scoreBoard);
-        File.WriteAllText(_saveFilePath, gameData);
-        File.WriteAllText(_scoreBoardPath, scoreData);
+        var gameSave = new GameSave(tiles, scoreBoard);
+        var saveData = JsonSerializer.Serialize(gameSave);
+        File.WriteAllText(_saveFilePath, saveData);
     }
 
-    public (IBoard?, ScoreBoard?) LoadGame()
+    public (int[,]? Tiles, ScoreBoard? ScoreBoard) LoadGame()
     {
-        Board? boardSavedData = null;
+        GameSave? gameSave = null;
         if (File.Exists(_saveFilePath))
         {
-            boardSavedData = _saveFilePath.ReadJsonFile<Board>();
+            gameSave = ReadJsonFile<GameSave>(_saveFilePath);
         }
 
-        ScoreBoard? scoreBoardSavedData = null;
-        if (File.Exists(_scoreBoardPath))
-        {
-            scoreBoardSavedData = _scoreBoardPath.ReadJsonFile<ScoreBoard>();
-        }
-
-        return (boardSavedData, scoreBoardSavedData);
+        return (gameSave?.Tiles, gameSave?.ScoreBoard);
     }
 
     public void ResetGameSave()
     {
-        if (File.Exists(_saveFilePath))
-        {
-            File.Delete(_saveFilePath);
-        }
-
-        if (!File.Exists(_scoreBoardPath))
+        if (!File.Exists(_saveFilePath))
         {
             return;
         }
 
         // Reset score, but not the record score, in the saved file
-        var scoreBoard = _scoreBoardPath.ReadJsonFile<ScoreBoard>()!;
+        var gameSave = ReadJsonFile<GameSave>(_saveFilePath);
+        gameSave!.ResetSave();
+        File.WriteAllText(_saveFilePath, JsonSerializer.Serialize(gameSave));
+    }
 
-        scoreBoard.Reset();
-        File.WriteAllText(_scoreBoardPath, JsonSerializer.Serialize(scoreBoard));
+    private static T? ReadJsonFile<T>(string path) where T : class
+    {
+        // Move read logic to StorageService
+        return JsonSerializer.Deserialize<T>(File.ReadAllText(path));
+    }
+
+    public record GameSave(int[,] Tiles, ScoreBoard ScoreBoard)
+    {
+        internal void ResetSave()
+        {
+            ScoreBoard.Reset();
+        }
     }
 }

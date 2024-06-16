@@ -1,6 +1,6 @@
 ﻿using _2048Game.Models;
-using _2048Game.Models.Abstractions;
 using _2048Game.Services;
+using _2048Game.Services.Abstractions;
 using System.Text.Json;
 
 namespace _2048Game.Tests.Services;
@@ -8,7 +8,6 @@ namespace _2048Game.Tests.Services;
 public sealed class StorageServiceTests : IDisposable
 {
     private readonly string _saveFilePath;
-    private readonly string _scoreBoardPath;
     private readonly StorageService _storageService;
     private readonly string _tempAppDataPath;
 
@@ -16,7 +15,6 @@ public sealed class StorageServiceTests : IDisposable
     {
         _tempAppDataPath = Path.Combine(Path.GetTempPath(), "2048Game");
         _saveFilePath = Path.Combine(_tempAppDataPath, "savegame.json");
-        _scoreBoardPath = Path.Combine(_tempAppDataPath, "scoreboard.json");
         _storageService = new StorageService(_tempAppDataPath);
     }
 
@@ -37,40 +35,36 @@ public sealed class StorageServiceTests : IDisposable
     [Fact]
     public void SaveGame_Creates_Save_Files()
     {
-        var mockBoard = new Mock<IBoard>();
-        var scoreBoard = new ScoreBoard();
+        var mockBoardService = new Mock<IBoardService>();
 
-        mockBoard.Setup(b => b.Tiles).Returns(new List<Tile>());
-        mockBoard.Setup(b => b.Size).Returns(4);
+        mockBoardService.Setup(b => b.Tiles).Returns(new int[4,4]);
+        mockBoardService.Setup(b => b.BoardSize).Returns(4);
+        mockBoardService.Setup(b => b.ScoreBoard).Returns(new ScoreBoard());
 
-        _storageService.SaveGame(mockBoard.Object, scoreBoard);
+        _storageService.SaveGame(mockBoardService.Object.Tiles, mockBoardService.Object.ScoreBoard);
 
         File.Exists(_saveFilePath).ShouldBeTrue();
-        File.Exists(_scoreBoardPath).ShouldBeTrue();
     }
 
     [Fact]
     public void LoadGame_Loads_Saved_Files()
     {
-        var board = new Board();
-        var scoreBoard = new ScoreBoard
+        var board = new BoardService(scoreBoard: new ScoreBoard
         {
             Score = 100,
             BestScore = 200
-        };
+        });
 
-        File.WriteAllText(_saveFilePath, JsonSerializer.Serialize(board));
-        File.WriteAllText(_scoreBoardPath, JsonSerializer.Serialize(scoreBoard));
+        _storageService.SaveGame(board.Tiles, board.ScoreBoard);
 
-        var (loadedBoard, loadedScoreBoard) = _storageService.LoadGame();
+        var (loadedTiles, loadedScoreBoard) = _storageService.LoadGame();
 
-        loadedBoard.ShouldNotBeNull();
+        loadedTiles.ShouldNotBeNull();
         loadedScoreBoard.ShouldNotBeNull();
-        loadedBoard.Size.ShouldBe(board.Size);
-        loadedScoreBoard.Score.ShouldBe(scoreBoard.Score);
-        loadedScoreBoard.BestScore.ShouldBe(scoreBoard.BestScore);
-        loadedBoard.Tiles.Select(t => new { t.Row, t.Column, t.Value })
-            .ShouldBe(board.Tiles.Select(t => new { t.Row, t.Column, t.Value }));
+        loadedTiles.Length.ShouldBe(board.Tiles.Length);
+        loadedScoreBoard.Score.ShouldBe(board.ScoreBoard.Score);
+        loadedScoreBoard.BestScore.ShouldBe(board.ScoreBoard.BestScore);
+        loadedTiles.ShouldBe(board.Tiles);
     }
 
     [Fact]
@@ -82,30 +76,25 @@ public sealed class StorageServiceTests : IDisposable
             BestScore = 200
         };
 
-        File.WriteAllText(_saveFilePath, JsonSerializer.Serialize(new Board()));
-        File.WriteAllText(_scoreBoardPath, JsonSerializer.Serialize(scoreBoard));
-
+        _storageService.SaveGame(new int[4,4], scoreBoard);
         _storageService.ResetGameSave();
 
         File.Exists(_saveFilePath).ShouldBeFalse();
-        File.Exists(_scoreBoardPath).ShouldBeTrue();
 
-        var loadedScoreBoard = JsonSerializer.Deserialize<ScoreBoard>(File.ReadAllText(_scoreBoardPath));
+        var loadedScoreBoard = JsonSerializer.Deserialize<StorageService.GameSave>(File.ReadAllText(_saveFilePath));
         loadedScoreBoard.ShouldNotBeNull();
-        loadedScoreBoard.Score.ShouldBe(0);
-        loadedScoreBoard.BestScore.ShouldBe(scoreBoard.BestScore);
+        loadedScoreBoard.ScoreBoard.Score.ShouldBe(0);
+        loadedScoreBoard.ScoreBoard.BestScore.ShouldBe(scoreBoard.BestScore);
     }
 
     [Fact]
     public void ResetGameSave_If_ScoreBoard_NotExist_Returns()
     {
-        File.WriteAllText(_saveFilePath, JsonSerializer.Serialize(new Board()));
-        File.Delete(_scoreBoardPath);
+        File.WriteAllText(_saveFilePath, JsonSerializer.Serialize(new StorageService.GameSave(new int[4,4], new ScoreBoard())));
 
         _storageService.ResetGameSave();
 
-        File.Exists(_saveFilePath).ShouldBeFalse();
-        File.Exists(_scoreBoardPath).ShouldBeFalse();
+        File.Exists(_saveFilePath).ShouldBeTrue();
     }
 
     public void Dispose()

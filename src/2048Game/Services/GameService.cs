@@ -1,32 +1,30 @@
 ﻿using _2048Game.Core;
-using _2048Game.Core.Exceptions;
-using _2048Game.Models;
-using _2048Game.Models.Abstractions;
 using _2048Game.Services.Abstractions;
 
 namespace _2048Game.Services;
 
 public sealed class GameService(
-    IBoard board,
-    ScoreBoard scoreBoard,
-    ITileControlService tileControlService,
+    IBoardService boardService,
     IStorageService storageService,
-    IRenderService renderService
+    IRenderService renderService,
+    IInputService inputService
 ) : IGameService
 {
+    public bool Running { get; private set; }
+
     public void StartGame()
     {
-        renderService.RenderBoard();
+        Running = true;
+        while (Running)
+        {
+            inputService.ListenKey();
+            RenderBoard();
+        }
     }
 
-    public void ProcessStep(Direction? direction)
+    public void ProcessStep(Direction direction)
     {
-        var moved = false;
-
-        if (direction.HasValue)
-        {
-            moved = tileControlService.Move(direction.Value);
-        }
+        var moved = boardService.Move(direction);
 
         switch (moved)
         {
@@ -34,22 +32,34 @@ public sealed class GameService(
                 HandleMove();
                 break;
 
-            case false when !board.CanMove(): // Game Over
+            case false when !boardService.CanMove(): // Game Over
             {
                 HandleGameOver();
                 break;
             }
         }
 
-        renderService.RenderBoard();
+        RenderBoard();
 
         return;
 
         void HandleMove()
         {
-            board.AddRandomTile();
-            scoreBoard.AddScore(tileControlService.MergeScore);
+            if (boardService.HasWon())
+            {
+                HandleWin();
+                return;
+            }
+
+            boardService.AddRandomTile();
             SaveGame();
+        }
+
+        void HandleWin()
+        {
+            renderService.RenderWin();
+            SaveGame();
+            Running = false;
         }
 
         void HandleGameOver()
@@ -63,20 +73,42 @@ public sealed class GameService(
 
             // Save empty board and score before exit
             storageService.ResetGameSave();
-            throw new GameExitException();
+            Running = false;
         }
     }
 
     public void StartNewGame()
     {
-        board.Reset();
-        scoreBoard.Reset();
-        renderService.RenderBoard();
+        boardService.Reset();
+        RenderBoard();
         SaveGame();
     }
 
     public void SaveGame()
     {
-        storageService.SaveGame(board, scoreBoard);
+        storageService.SaveGame(boardService.Tiles, boardService.ScoreBoard);
+    }
+
+    public void ProcessExit()
+    {
+        // move logic to GameService
+        if (renderService.ConfirmAction("Quit game?"))
+        {
+            SaveGame();
+            Running = false;
+        }
+    }
+
+    public void ProcessRestart()
+    {
+        if (renderService.ConfirmAction("Restart game?"))
+        {
+            StartNewGame();
+        }
+    }
+
+    private void RenderBoard()
+    {
+        renderService.RenderBoard(boardService.Tiles, boardService.ScoreBoard, boardService.BoardSize);
     }
 }

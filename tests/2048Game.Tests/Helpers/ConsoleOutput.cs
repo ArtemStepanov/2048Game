@@ -5,6 +5,7 @@
 /// </summary>
 public sealed class ConsoleOutput : IDisposable
 {
+    // todo: заменить на StringBuilder
     private readonly TextWriter _originalOutput;
     private readonly StringWriter _stringWriter;
 

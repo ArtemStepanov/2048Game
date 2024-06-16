@@ -17,7 +17,7 @@ public sealed class InputServiceTests : IDisposable
         _mockGameService = new Mock<IGameService>();
         _mockRenderService = new Mock<IRenderService>();
         _mockConsoleService = new Mock<IConsoleService>();
-        _inputService = new InputService(_mockGameService.Object, _mockRenderService.Object, _mockConsoleService.Object);
+        _inputService = new InputService(_mockGameService.Object, _mockConsoleService.Object);
         _consoleOutput = new ConsoleOutput();
         _mockConsoleService.Setup(c => c.WriteLine(It.IsAny<string>())).Callback<string>(s => _consoleOutput.WriteLine(s));
     }
@@ -37,7 +37,7 @@ public sealed class InputServiceTests : IDisposable
         _mockConsoleService.SetupSequence(c => c.ReadKey(true))
             .Returns(new ConsoleKeyInfo('\0', key, false, false, false));
 
-        _inputService.HandleInput().ShouldBeTrue();
+        _inputService.HandleInput();
         _consoleOutput.GetOutput().ShouldBeEmpty();
 
         _mockGameService.Verify(g => g.ProcessStep(direction), Times.Once);
@@ -50,7 +50,7 @@ public sealed class InputServiceTests : IDisposable
         _mockConsoleService.SetupSequence(c => c.ReadKey(true))
             .Returns(new ConsoleKeyInfo('R', ConsoleKey.R, false, false, false));
 
-        _inputService.HandleInput().ShouldBeTrue();
+        _inputService.HandleInput();
 
         _mockGameService.Verify(g => g.StartNewGame(), Times.Once);
     }
@@ -62,7 +62,7 @@ public sealed class InputServiceTests : IDisposable
         _mockConsoleService.SetupSequence(c => c.ReadKey(true))
             .Returns(new ConsoleKeyInfo('Q', ConsoleKey.Q, false, false, false));
 
-        _inputService.HandleInput().ShouldBeFalse();
+        _inputService.HandleInput();
         _consoleOutput.GetOutput().ShouldBe("Goodbye!" + Environment.NewLine);
 
         _mockGameService.Verify(g => g.SaveGame(), Times.Once);
@@ -75,7 +75,7 @@ public sealed class InputServiceTests : IDisposable
         _mockConsoleService.SetupSequence(c => c.ReadKey(true))
             .Returns(new ConsoleKeyInfo('A', invalidKey, false, false, false));
 
-        _inputService.HandleInput().ShouldBeTrue();
+        _inputService.HandleInput();
 
         _consoleOutput.GetOutput()
             .ShouldBe("Invalid input. Use arrow keys to move, R to restart, Q to quit." + Environment.NewLine);

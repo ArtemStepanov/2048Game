@@ -1,5 +1,4 @@
 ﻿using _2048Game.Models;
-using _2048Game.Models.Abstractions;
 using _2048Game.Services;
 using _2048Game.Services.Abstractions;
 
@@ -8,35 +7,44 @@ namespace _2048Game.Tests.Services;
 public sealed class RenderServiceTests : IDisposable
 {
     private readonly ConsoleOutput _consoleOutput;
-    private readonly Mock<IBoard> _mockBoard;
+    private readonly Mock<IBoardService> _mockBoard;
     private readonly Mock<IConsoleService> _mockConsoleService;
+    private readonly Mock<IInputService> _mockInputService;
     private readonly RenderService _renderService;
 
     public RenderServiceTests()
     {
-        _mockBoard = new Mock<IBoard>();
+        _mockBoard = new Mock<IBoardService>();
         _mockConsoleService = new Mock<IConsoleService>();
-        _renderService = new RenderService(_mockBoard.Object, new ScoreBoard(), _mockConsoleService.Object);
+        _mockInputService = new Mock<IInputService>();
+        _renderService = new RenderService(_mockConsoleService.Object, _mockInputService.Object);
         _consoleOutput = new ConsoleOutput();
     }
 
     [Fact]
     public void RenderBoard_Displays_Correct_Output()
     {
-        _mockBoard.Setup(b => b.Size).Returns(4);
-        _mockBoard.Setup(b => b.Tiles).Returns(new List<Tile>
+        //new List<Tile>
+        //{
+        //    new(0, 0, 2),
+        //    new(1, 1, 4),
+        //    new(2, 2, 8),
+        //    new(3, 3, 16)
+        //}
+        _mockBoard.Setup(b => b.BoardSize).Returns(4);
+        _mockBoard.Setup(b => b.Tiles).Returns(new int[,]
         {
-            new(0, 0, 2),
-            new(1, 1, 4),
-            new(2, 2, 8),
-            new(3, 3, 16)
+            {0,2},
+            {1, 4},
+            {2, 8},
+            {3,16}
         });
 
         _mockConsoleService.Setup(c => c.Clear()).Callback(() => _consoleOutput.Clear());
         _mockConsoleService.Setup(c => c.WriteLine(It.IsAny<string>())).Callback<string>(s => _consoleOutput.WriteLine(s));
         _mockConsoleService.Setup(c => c.Write(It.IsAny<string>())).Callback<string>(s => _consoleOutput.Write(s));
 
-        _renderService.RenderBoard();
+        _renderService.RenderBoard(_mockBoard.Object.Tiles, _mockBoard.Object.ScoreBoard, _mockBoard.Object.BoardSize);
         var output = _consoleOutput.GetOutput();
 
         const string expected = """
