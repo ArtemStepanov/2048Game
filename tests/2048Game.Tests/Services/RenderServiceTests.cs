@@ -32,13 +32,13 @@ public sealed class RenderServiceTests
     public void RenderBoard_Displays_Correct_Output()
     {
         _mockBoard.Setup(b => b.BoardSize).Returns(4);
-        _mockBoard.Setup(b => b.Tiles).Returns(new int[4, 4]
-        {
-            { 2, 0, 0, 0 },
-            { 0, 4, 0, 0 },
-            { 0, 0, 8, 0 },
-            { 0, 0, 0, 16 }
-        });
+        _mockBoard.Setup(b => b.Tiles).Returns(
+        [
+            [ 2, 0, 0, 0 ],
+            [ 0, 4, 0, 0 ],
+            [ 0, 0, 8, 0 ],
+            [ 0, 0, 0, 16]
+        ]);
 
         _mockBoard.Setup(b => b.ScoreBoard).Returns(new ScoreBoard());
 

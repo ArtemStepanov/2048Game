@@ -4,7 +4,7 @@ namespace _2048Game.Services.Abstractions;
 
 public interface IRenderService
 {
-    void RenderBoard(int[,] tiles, ScoreBoard scoreBoard, int boardSize);
+    void RenderBoard(int[][] tiles, ScoreBoard scoreBoard, int boardSize);
     void RenderGameOver();
     void RenderWin();
 }

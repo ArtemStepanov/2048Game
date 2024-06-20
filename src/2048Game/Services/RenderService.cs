@@ -10,7 +10,7 @@ public sealed class RenderService(IConsoleService consoleService) : IRenderServi
 {
     private const int TileWidth = 7;
 
-    public void RenderBoard(int[,] tiles, ScoreBoard scoreBoard, int boardSize)
+    public void RenderBoard(int[][] tiles, ScoreBoard scoreBoard, int boardSize)
     {
         consoleService.Clear();
         consoleService.WriteLine($"Score: {scoreBoard.Score}");
@@ -21,7 +21,7 @@ public sealed class RenderService(IConsoleService consoleService) : IRenderServi
         {
             for (var y = 0; y < boardSize; y++)
             {
-                var tileValue = tiles[x, y];
+                var tileValue = tiles[x][y];
                 PrintTileValue(tileValue);
             }
 

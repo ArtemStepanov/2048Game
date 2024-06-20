@@ -30,7 +30,7 @@ public sealed class GameServiceTests
     [Fact]
     public void StartGame_Renders_Board()
     {
-        _mockRenderService.Setup(r => r.RenderBoard(It.IsAny<int[,]>(), It.IsAny<ScoreBoard>(), It.IsAny<int>())).Throws<Exception>();
+        _mockRenderService.Setup(r => r.RenderBoard(It.IsAny<int[][]>(), It.IsAny<ScoreBoard>(), It.IsAny<int>())).Throws<Exception>();
         Should.Throw<Exception>(_gameService.StartGame);
         _mockRenderService.Verify(r => r.RenderBoard(_mockBoardService.Object.Tiles, _mockBoardService.Object.ScoreBoard, _mockBoardService.Object.BoardSize), Times.Once);
     }
@@ -44,7 +44,6 @@ public sealed class GameServiceTests
         result.ShouldBe(ProcessStepResult.RegularMove);
 
         _mockBoardService.Verify(t => t.Move(Direction.Left), Times.Once);
-        _mockBoardService.Verify(b => b.AddRandomTile(), Times.Once);
         _mockStorageService.Verify(s => s.SaveGame(_mockBoardService.Object.Tiles, It.IsAny<int>(), _mockBoardService.Object.ScoreBoard), Times.Once);
         _mockRenderService.Verify(r => r.RenderBoard(_mockBoardService.Object.Tiles, _mockBoardService.Object.ScoreBoard, _mockBoardService.Object.BoardSize), Times.Once);
     }

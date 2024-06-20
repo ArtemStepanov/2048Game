@@ -22,14 +22,14 @@ public sealed class StorageService : IStorageService
         }
     }
 
-    public void SaveGame(int[,] tiles, int boardSize, ScoreBoard scoreBoard)
+    public void SaveGame(int[][] tiles, int boardSize, ScoreBoard scoreBoard)
     {
         var gameSave = GameSave.Create(tiles, boardSize, scoreBoard);
         var saveData = JsonSerializer.Serialize(gameSave);
         File.WriteAllText(_saveFilePath, saveData);
     }
 
-    public (int[,]? Tiles, ScoreBoard? ScoreBoard) LoadGame()
+    public (int[][]? Tiles, ScoreBoard? ScoreBoard) LoadGame()
     {
         GameSave? gameSave = null;
         if (File.Exists(_saveFilePath))
@@ -37,7 +37,7 @@ public sealed class StorageService : IStorageService
             gameSave = ReadJsonFile<GameSave>(_saveFilePath);
         }
 
-        return gameSave is null ? (null, null) : gameSave.ToRawTilesAndScoreBoard();
+        return gameSave?.ToRawTilesAndScoreBoard() ?? (null, null)!;
     }
 
     public void ResetGameSave()

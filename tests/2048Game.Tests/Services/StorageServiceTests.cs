@@ -10,6 +10,14 @@ public sealed class StorageServiceTests : IDisposable
     private readonly StorageService _storageService;
     private readonly string _tempAppDataPath;
 
+    private readonly int[][] _dummyCollection =
+    [
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0]
+    ];
+
     public StorageServiceTests()
     {
         _tempAppDataPath = Path.Combine(Path.GetTempPath(), "2048Game");
@@ -34,18 +42,14 @@ public sealed class StorageServiceTests : IDisposable
     [Fact]
     public void SaveGame_Creates_Save_Files()
     {
-        _storageService.SaveGame(new int[4, 4], 4, new ScoreBoard());
+        _storageService.SaveGame(_dummyCollection, 4, new ScoreBoard());
         File.Exists(_saveFilePath).ShouldBeTrue();
     }
 
     [Fact]
     public void LoadGame_Loads_Saved_Files()
     {
-        var board = new BoardService(scoreBoard: new ScoreBoard
-        {
-            Score = 100,
-            BestScore = 200
-        });
+        var board = new BoardService(scoreBoard: new ScoreBoard { Score = 100, BestScore = 200 });
 
         _storageService.SaveGame(board.Tiles, board.BoardSize, board.ScoreBoard);
 
@@ -62,13 +66,9 @@ public sealed class StorageServiceTests : IDisposable
     [Fact]
     public void ResetGameSave_Resets_Save_File()
     {
-        var scoreBoard = new ScoreBoard
-        {
-            Score = 100,
-            BestScore = 200
-        };
+        var scoreBoard = new ScoreBoard { Score = 100, BestScore = 200 };
 
-        _storageService.SaveGame(new int[4, 4], 4, scoreBoard);
+        _storageService.SaveGame(_dummyCollection, 4, scoreBoard);
         _storageService.ResetGameSave();
 
         File.Exists(_saveFilePath).ShouldBeTrue();
@@ -83,7 +83,7 @@ public sealed class StorageServiceTests : IDisposable
     [Fact]
     public void ResetGameSave_If_ScoreBoard_NotExist_Returns()
     {
-        File.WriteAllText(_saveFilePath, JsonSerializer.Serialize(GameSave.Create(new int[4, 4], 4, new ScoreBoard())));
+        File.WriteAllText(_saveFilePath, JsonSerializer.Serialize(GameSave.Create(_dummyCollection, 4, new ScoreBoard())));
 
         _storageService.ResetGameSave();
 

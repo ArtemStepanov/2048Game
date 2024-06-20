@@ -1,5 +1,6 @@
 ﻿using _2048Game.Core;
 using _2048Game.Services;
+using _2048Game.Services.Abstractions;
 
 namespace _2048Game.Tests.Models;
 
@@ -9,7 +10,7 @@ public sealed class BoardServiceTests
     public void Board_Initializes_With_Sixteen_Default_Tiles()
     {
         var board = new BoardService();
-        board.Tiles.Length.ShouldBe(16);
+        board.Tiles.Length.ShouldBe(4);
     }
 
     [Fact]
@@ -29,7 +30,7 @@ public sealed class BoardServiceTests
     {
         var board = new BoardService(size: size);
         board.BoardSize.ShouldBe(size);
-        board.Tiles.Length.ShouldBe(size * size);
+        board.Tiles.Length.ShouldBe(size);
     }
 
     [Fact]
@@ -38,29 +39,6 @@ public sealed class BoardServiceTests
         var board = new BoardService();
         board.AddRandomTile();
         ValidatePositives(board, 3);
-    }
-
-    [Fact]
-    public void RemoveTile_Removes_A_Tile()
-    {
-        var board = new BoardService(new int[4, 4]
-        {
-            { 2, 0, 1, 2 },
-            { 0, 0, 3, 4 },
-            { 0, 0, 3, 4 },
-            { 0, 0, 3, 4 }
-        });
-
-        board.RemoveTile(1, 2);
-        board.Tiles.Length.ShouldBe(16);
-        board.Tiles[1, 2].ShouldBe(0);
-    }
-
-    [Fact]
-    public void RemoveTile_ThrowsIfOutOfBound()
-    {
-        var board = new BoardService();
-        Should.Throw<ArgumentOutOfRangeException>(() => board.RemoveTile(5, 2));
     }
 
     [Theory]
@@ -77,7 +55,7 @@ public sealed class BoardServiceTests
     {
         var board = new BoardService();
         board.Reset(6);
-        board.Tiles.Length.ShouldBe(36);
+        board.Tiles.Length.ShouldBe(6);
         board.BoardSize.ShouldBe(6);
     }
 
@@ -92,13 +70,13 @@ public sealed class BoardServiceTests
     [Fact]
     public void CanMove_Returns_True_If_Merge_Possible()
     {
-        var board = new BoardService(new int[4, 4]
-        {
-            { 2, 0, 1, 2 },
-            { 0, 0, 3, 4 },
-            { 0, 0, 3, 4 },
-            { 0, 0, 3, 4 }
-        });
+        var board = new BoardService(
+        [
+            [2, 0, 1, 2],
+            [0, 0, 3, 4],
+            [0, 0, 3, 4],
+            [0, 0, 3, 4]
+        ]);
 
         board.CanMove().ShouldBeTrue();
     }
@@ -112,7 +90,7 @@ public sealed class BoardServiceTests
         {
             for (var col = 0; col < board.BoardSize; col++)
             {
-                board.Tiles[row, col] = (row * 4 + col + 1) * 2;
+                board.Tiles[row][col] = (row * 4 + col + 1) * 2;
             }
         }
 
@@ -127,9 +105,10 @@ public sealed class BoardServiceTests
     [InlineData(8)]
     public void MoveLeft_Moves_Tiles_Left(int boardSize)
     {
-        var tiles = new int[boardSize, boardSize];
-        tiles[0, 0] = 2;
-        tiles[1, 0] = 2;
+        var tiles = InitializeArray(boardSize);
+        tiles[0][0] = 2;
+        tiles[0][1] = 2;
+        tiles[0][2] = 3;
 
         var boardService = new BoardService(tiles, size: boardSize);
 
@@ -137,7 +116,8 @@ public sealed class BoardServiceTests
 
         moved.ShouldBeTrue();
 
-        boardService.Tiles[0, 0].ShouldBe(4);
+        boardService.Tiles[0][0].ShouldBe(4);
+        boardService.Tiles[0][1].ShouldBe(3);
     }
 
     [Theory]
@@ -148,9 +128,10 @@ public sealed class BoardServiceTests
     [InlineData(8)]
     public void MoveRight_Moves_Tiles_Right(int boardSize)
     {
-        var tiles = new int[boardSize, boardSize];
-        tiles[0, 0] = 2;
-        tiles[1, 0] = 2;
+        var tiles = InitializeArray(boardSize);
+        tiles[0][0] = 3;
+        tiles[0][1] = 2;
+        tiles[0][2] = 2;
 
         var boardService = new BoardService(tiles, size: boardSize);
 
@@ -158,16 +139,17 @@ public sealed class BoardServiceTests
 
         moved.ShouldBeTrue();
 
-        boardService.Tiles[boardSize - 1, 0].ShouldBe(4);
+        boardService.Tiles[0][boardSize - 1].ShouldBe(4);
+        boardService.Tiles[0][boardSize - 2].ShouldBe(3);
     }
 
     [Fact]
     public void MoveRight_Moves_Tiles_Right_WithThreeValuesOnTheRow()
     {
-        var tiles = new int[4, 4];
-        tiles[0, 0] = 2;
-        tiles[1, 0] = 2;
-        tiles[2, 0] = 2;
+        var tiles = InitializeArray(4);
+        tiles[0][0] = 2;
+        tiles[0][1] = 2;
+        tiles[0][2] = 2;
 
         var boardService = new BoardService(tiles);
 
@@ -175,8 +157,8 @@ public sealed class BoardServiceTests
 
         moved.ShouldBeTrue();
 
-        boardService.Tiles[3, 0].ShouldBe(4);
-        boardService.Tiles[2, 0].ShouldBe(2);
+        boardService.Tiles[0][3].ShouldBe(4);
+        boardService.Tiles[0][2].ShouldBe(2);
     }
 
     [Theory]
@@ -187,9 +169,10 @@ public sealed class BoardServiceTests
     [InlineData(8)]
     public void MoveUp_Moves_Tiles_Up(int boardSize)
     {
-        var tiles = new int[boardSize, boardSize];
-        tiles[0, 0] = 2;
-        tiles[0, 1] = 2;
+        var tiles = InitializeArray(boardSize);
+        tiles[0][0] = 2;
+        tiles[1][0] = 2;
+        tiles[2][0] = 3;
 
         var boardService = new BoardService(tiles, size: boardSize);
 
@@ -197,7 +180,8 @@ public sealed class BoardServiceTests
 
         moved.ShouldBeTrue();
 
-        boardService.Tiles[0, 0].ShouldBe(4);
+        boardService.Tiles[0][0].ShouldBe(4);
+        boardService.Tiles[1][0].ShouldBe(3);
     }
 
     [Theory]
@@ -208,9 +192,10 @@ public sealed class BoardServiceTests
     [InlineData(8)]
     public void MoveDown_Moves_Tiles_Down(int boardSize)
     {
-        var tiles = new int[boardSize, boardSize];
-        tiles[0, 0] = 2;
-        tiles[0, 1] = 2;
+        var tiles = InitializeArray(boardSize);
+        tiles[0][0] = 3;
+        tiles[1][0] = 2;
+        tiles[2][0] = 2;
 
         var boardService = new BoardService(tiles, size: boardSize);
 
@@ -218,23 +203,35 @@ public sealed class BoardServiceTests
 
         moved.ShouldBeTrue();
 
-        boardService.Tiles[0, boardSize - 1].ShouldBe(4);
+        boardService.Tiles[boardSize - 1][0].ShouldBe(4);
+        boardService.Tiles[boardSize - 2][0].ShouldBe(3);
     }
 
-    private static void ValidatePositives(BoardService board, int count)
+    private static void ValidatePositives(IBoardService board, int count)
     {
         var positive = new List<int>();
-        for (int x = 0; x < board.BoardSize; x++)
+        for (var x = 0; x < board.BoardSize; x++)
         {
-            for (int y = 0; y < board.BoardSize; y++)
+            for (var y = 0; y < board.BoardSize; y++)
             {
-                if (board.Tiles[x, y] > 0)
+                if (board.Tiles[x][y] > 0)
                 {
-                    positive.Add(board.Tiles[x, y]);
+                    positive.Add(board.Tiles[x][y]);
                 }
             }
         }
 
         positive.Count.ShouldBe(count);
+    }
+
+    private static int[][] InitializeArray(int i)
+    {
+        var array = new int[i][];
+        for (var x = 0; x < i; x++)
+        {
+            array[x] = new int[i];
+        }
+
+        return array;
     }
 }

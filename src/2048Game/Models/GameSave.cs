@@ -1,32 +1,30 @@
 ﻿namespace _2048Game.Models;
 
-public record GameSave(GameSave.Tile[] Tiles, ScoreBoard ScoreBoard, int BoardSize = 4)
+public record GameSave(List<GameSave.Tile> Tiles, ScoreBoard ScoreBoard, int BoardSize = 4)
 {
-    public record struct Tile(int X, int Y, int Value);
+    public record struct Tile(int Column, int Row, int Value);
 
-    public static GameSave Create(int[,] tiles, int boardSize, ScoreBoard scoreBoard)
+    public static GameSave Create(int[][] tiles, int boardSize, ScoreBoard scoreBoard)
     {
-        int rows = tiles.GetLength(0);
-        int cols = tiles.GetLength(1);
-        var convertedTiles = new Tile[tiles.Length];
-        var index = 0;
-        for (int i = 0; i < rows; i++)
+        var convertedTiles = new List<Tile>();
+        for (var row = 0; row < boardSize; row++)
         {
-            for (int j = 0; j < cols; j++)
+            for (var column = 0; column < boardSize; column++)
             {
-                convertedTiles[index++] = new Tile(i, j, tiles[i, j]);
+                convertedTiles.Add(new Tile(column, row, tiles[row][column]));
             }
         }
 
         return new GameSave(convertedTiles, scoreBoard, boardSize);
     }
 
-    public (int[,] tiles, ScoreBoard scoreBoard) ToRawTilesAndScoreBoard()
+    public (int[][] tiles, ScoreBoard scoreBoard) ToRawTilesAndScoreBoard()
     {
-        var tiles = new int[BoardSize, BoardSize];
+        var tiles = new int[BoardSize][];
         foreach (var tile in Tiles)
         {
-            tiles[tile.X, tile.Y] = tile.Value;
+            tiles[tile.Row] ??= new int[BoardSize];
+            tiles[tile.Row][tile.Column] = tile.Value;
         }
 
         return (tiles, ScoreBoard);
