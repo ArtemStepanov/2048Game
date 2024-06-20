@@ -132,16 +132,16 @@ public sealed class BoardService : IBoardService
                 y = i;
                 break;
             case Direction.Right:
-                x = BoardSize - 1 - i;
-                y = j;
+                x = j;
+                y = BoardSize - 1 - i;
                 break;
             case Direction.Up:
-                x = j;
-                y = i;
+                x = i;
+                y = j;
                 break;
             case Direction.Down:
-                x = i;
-                y = BoardSize - 1 - j;
+                x = BoardSize - 1 - j;
+                y = i;
                 break;
             default:
                 throw new InvalidOperationException("Invalid direction");
