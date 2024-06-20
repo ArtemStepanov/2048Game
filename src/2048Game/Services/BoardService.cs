@@ -65,51 +65,52 @@ public sealed class BoardService : IBoardService
         MergeScore = 0;
         bool moved = false;
 
-        switch (direction)
+        for (int i = 0; i < BoardSize; i++)
         {
-            case Direction.Left:
-                for (int x = 0; x < BoardSize; x++)
+            int[] line = new int[BoardSize];
+            bool[] merged = new bool[BoardSize];
+            int index = 0;
+
+            for (int j = 0; j < BoardSize; j++)
+            {
+                GetCoordinates(i, j, direction, out var x, out var y);
+
+                int tileValue = Tiles[x, y];
+
+                if (tileValue != 0)
                 {
-                    if (MoveLine(x, 0, 1, 0))
+                    if (index > 0 && line[index - 1] == tileValue && !merged[index - 1])
                     {
-                        moved = true;
+                        line[index - 1] *= 2;
+                        MergeScore += line[index - 1];
+                        merged[index - 1] = true;
+                    }
+                    else
+                    {
+                        line[index++] = tileValue;
                     }
                 }
+            }
 
-                break;
+            for (int j = 0; j < BoardSize; j++)
+            {
+                GetCoordinates(i, j, direction, out var x, out var y);
 
-            case Direction.Right:
-                for (int y = 0; y < BoardSize; y++)
+                if (Tiles[x, y] != line[j])
                 {
-                    if (MoveLine(y, BoardSize - 1, -1, 0))
-                    {
-                        moved = true;
-                    }
+                    Tiles[x, y] = line[j];
+                    moved = true;
                 }
 
-                break;
-
-            case Direction.Up:
-                for (int x = 0; x < BoardSize; x++)
+                if (line[j] == 0)
                 {
-                    if (MoveLine(0, x, 0, 1))
-                    {
-                        moved = true;
-                    }
+                    _emptyTiles.Add((x, y));
                 }
-
-                break;
-
-            case Direction.Down:
-                for (int x = 0; x < BoardSize; x++)
+                else
                 {
-                    if (MoveLine(BoardSize - 1, x, 0, -1))
-                    {
-                        moved = true;
-                    }
+                    _emptyTiles.Remove((x, y));
                 }
-
-                break;
+            }
         }
 
         if (moved)
@@ -122,45 +123,84 @@ public sealed class BoardService : IBoardService
         return moved;
     }
 
+    private void GetCoordinates(int i, int j, Direction direction, out int x, out int y)
+    {
+        switch (direction)
+        {
+            case Direction.Left:
+                x = j;
+                y = i;
+                break;
+            case Direction.Right:
+                x = BoardSize - 1 - i;
+                y = j;
+                break;
+            case Direction.Up:
+                x = j;
+                y = i;
+                break;
+            case Direction.Down:
+                x = i;
+                y = BoardSize - 1 - j;
+                break;
+            default:
+                throw new InvalidOperationException("Invalid direction");
+        }
+    }
+
     public bool CanMove()
     {
         for (int x = 0; x < BoardSize; x++)
         {
             for (int y = 0; y < BoardSize; y++)
             {
-                // Check empty tile
-                if (Tiles[x, y] == 0)
+                if (CheckTiles(x, y))
                 {
                     return true;
                 }
-
-                // Left
-                if (x > 0 && Tiles[x, y] == Tiles[x - 1, y])
+                else
                 {
-                    return true;
-                }
-
-                // Up
-                if (y > 0 && Tiles[x, y] == Tiles[x, y - 1])
-                {
-                    return true;
-                }
-
-                // Right
-                if (x < BoardSize - 1 && Tiles[x, y] == Tiles[x + 1, y])
-                {
-                    return true;
-                }
-
-                // Down
-                if (y < BoardSize - 1 && Tiles[x, y] == Tiles[x, y + 1])
-                {
-                    return true;
+                    continue;
                 }
             }
         }
 
         return false;
+
+        bool CheckTiles(int x, int y)
+        {
+            // Check empty tile
+            if (Tiles[x, y] == 0)
+            {
+                return true;
+            }
+
+            // Left
+            if (x > 0 && Tiles[x, y] == Tiles[x - 1, y])
+            {
+                return true;
+            }
+
+            // Up
+            if (y > 0 && Tiles[x, y] == Tiles[x, y - 1])
+            {
+                return true;
+            }
+
+            // Right
+            if (x < BoardSize - 1 && Tiles[x, y] == Tiles[x + 1, y])
+            {
+                return true;
+            }
+
+            // Down
+            if (y < BoardSize - 1 && Tiles[x, y] == Tiles[x, y + 1])
+            {
+                return true;
+            }
+
+            return false;
+        }
     }
 
     public bool HasWon()
@@ -177,66 +217,6 @@ public sealed class BoardService : IBoardService
         }
 
         return false;
-    }
-
-    private bool MoveLine(int startX, int startY, int dx, int dy)
-    {
-        bool moved = false;
-        int[] line = new int[BoardSize];
-        int[] merged = new int[BoardSize];
-
-        for (int i = 0; i < BoardSize; i++)
-        {
-            int x = startX + i * dx;
-            int y = startY + i * dy;
-            line[i] = Tiles[x, y];
-        }
-
-        int target = 0;
-
-        for (int i = 0; i < BoardSize; i++)
-        {
-            if (line[i] != 0)
-            {
-                if (merged[target] != 0 && merged[target] == line[i])
-                {
-                    merged[target] *= 2;
-                    MergeScore += merged[target];
-                    target++;
-                }
-                else if (merged[target] != 0)
-                {
-                    target++;
-                    merged[target] = line[i];
-                }
-                else
-                {
-                    merged[target] = line[i];
-                }
-            }
-        }
-
-        for (int i = 0; i < BoardSize; i++)
-        {
-            int x = startX + i * dx;
-            int y = startY + i * dy;
-            if (Tiles[x, y] != merged[i])
-            {
-                moved = true;
-                if (merged[i] == 0)
-                {
-                    _emptyTiles.Add((x, y));
-                }
-                else if (Tiles[x, y] == 0)
-                {
-                    _emptyTiles.Remove((x, y));
-                }
-            }
-
-            Tiles[x, y] = merged[i];
-        }
-
-        return moved;
     }
 
     private void Initialize(bool reset = false)
