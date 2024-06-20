@@ -11,29 +11,27 @@ public sealed class GameServiceTests
     private readonly Mock<IBoardService> _mockBoardService;
     private readonly Mock<IRenderService> _mockRenderService;
     private readonly Mock<IStorageService> _mockStorageService;
-    private readonly Mock<IInputService> _mockInputService;
 
     public GameServiceTests()
     {
         _mockBoardService = new Mock<IBoardService>();
         _mockStorageService = new Mock<IStorageService>();
         _mockRenderService = new Mock<IRenderService>();
-        _mockInputService = new Mock<IInputService>();
 
         _mockBoardService.Setup(b => b.CanMove()).Returns(true);
 
         _gameService = new GameService(
             _mockBoardService.Object,
             _mockStorageService.Object,
-            _mockRenderService.Object,
-            _mockInputService.Object
+            _mockRenderService.Object
         );
     }
 
     [Fact]
     public void StartGame_Renders_Board()
     {
-        _gameService.StartGame();
+        _mockRenderService.Setup(r => r.RenderBoard(It.IsAny<int[,]>(), It.IsAny<ScoreBoard>(), It.IsAny<int>())).Throws<Exception>();
+        Should.Throw<Exception>(_gameService.StartGame);
         _mockRenderService.Verify(r => r.RenderBoard(_mockBoardService.Object.Tiles, _mockBoardService.Object.ScoreBoard, _mockBoardService.Object.BoardSize), Times.Once);
     }
 
@@ -42,11 +40,12 @@ public sealed class GameServiceTests
     {
         _mockBoardService.Setup(t => t.Move(It.IsAny<Direction>())).Returns(true);
 
-        _gameService.ProcessStep(Direction.Left);
+        var result = _gameService.ProcessStep(Direction.Left);
+        result.ShouldBe(ProcessStepResult.RegularMove);
 
         _mockBoardService.Verify(t => t.Move(Direction.Left), Times.Once);
         _mockBoardService.Verify(b => b.AddRandomTile(), Times.Once);
-        _mockStorageService.Verify(s => s.SaveGame(_mockBoardService.Object.Tiles, _mockBoardService.Object.ScoreBoard), Times.Once);
+        _mockStorageService.Verify(s => s.SaveGame(_mockBoardService.Object.Tiles, It.IsAny<int>(), _mockBoardService.Object.ScoreBoard), Times.Once);
         _mockRenderService.Verify(r => r.RenderBoard(_mockBoardService.Object.Tiles, _mockBoardService.Object.ScoreBoard, _mockBoardService.Object.BoardSize), Times.Once);
     }
 
@@ -55,13 +54,11 @@ public sealed class GameServiceTests
     {
         _mockBoardService.Setup(t => t.Move(It.IsAny<Direction>())).Returns(false);
         _mockBoardService.Setup(b => b.CanMove()).Returns(false);
-        _mockRenderService.Setup(r => r.ConfirmAction(It.IsAny<string>())).Returns(false);
 
-        _gameService.ProcessStep(Direction.Left);
-        _gameService.Running.ShouldBeFalse();
+        var result = _gameService.ProcessStep(Direction.Left);
+        result.ShouldBe(ProcessStepResult.GameOver);
 
         _mockRenderService.Verify(r => r.RenderGameOver(), Times.Once);
-        _mockStorageService.Verify(s => s.ResetGameSave(), Times.Once);
     }
 
     [Fact]
@@ -69,24 +66,23 @@ public sealed class GameServiceTests
     {
         _mockBoardService.Setup(t => t.Move(It.IsAny<Direction>())).Returns(false);
         _mockBoardService.Setup(b => b.CanMove()).Returns(false);
-        _mockRenderService.Setup(r => r.ConfirmAction(It.IsAny<string>())).Returns(true);
 
-        _gameService.ProcessStep(Direction.Left);
+        var result = _gameService.ProcessStep(Direction.Left);
 
-        _mockBoardService.Verify(b => b.Reset(It.IsAny<int>()), Times.Once);
+        result.ShouldBe(ProcessStepResult.GameOver);
+
+        _mockStorageService.Verify(s => s.SaveGame(_mockBoardService.Object.Tiles, It.IsAny<int>(), _mockBoardService.Object.ScoreBoard), Times.Once);
         _mockRenderService.Verify(r => r.RenderGameOver(), Times.Once);
-        _mockRenderService.Verify(r => r.RenderBoard(_mockBoardService.Object.Tiles, _mockBoardService.Object.ScoreBoard, _mockBoardService.Object.BoardSize), Times.Exactly(2));
-        _mockStorageService.Verify(s => s.SaveGame(_mockBoardService.Object.Tiles, _mockBoardService.Object.ScoreBoard), Times.Once);
     }
 
     [Fact]
     public void StartNewGame_Resets_Board_And_Score()
     {
-        _gameService.StartNewGame();
+        _gameService.RestartGame();
 
         _mockBoardService.Verify(b => b.Reset(4), Times.Once);
         _mockRenderService.Verify(r => r.RenderBoard(_mockBoardService.Object.Tiles, _mockBoardService.Object.ScoreBoard, _mockBoardService.Object.BoardSize), Times.Once);
-        _mockStorageService.Verify(s => s.SaveGame(_mockBoardService.Object.Tiles, _mockBoardService.Object.ScoreBoard), Times.Once);
+        _mockStorageService.Verify(s => s.SaveGame(_mockBoardService.Object.Tiles, _mockBoardService.Object.BoardSize, _mockBoardService.Object.ScoreBoard), Times.Once);
     }
 
     [Fact]
@@ -94,6 +90,6 @@ public sealed class GameServiceTests
     {
         _gameService.SaveGame();
 
-        _mockStorageService.Verify(s => s.SaveGame(_mockBoardService.Object.Tiles, _mockBoardService.Object.ScoreBoard), Times.Once);
+        _mockStorageService.Verify(s => s.SaveGame(_mockBoardService.Object.Tiles, It.IsAny<int>(), _mockBoardService.Object.ScoreBoard), Times.Once);
     }
 }

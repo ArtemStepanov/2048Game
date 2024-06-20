@@ -16,9 +16,9 @@ public static class Program
 
         var serviceProvider = serviceCollection.BuildServiceProvider();
 
-        var gameService = serviceProvider.GetRequiredService<IGameService>();
+        var inputService = serviceProvider.GetRequiredService<IInputService>();
 
-        gameService.StartGame();
+        inputService.StartGameAndListenInput();
     }
 
     private static void ConfigureServices(IServiceCollection serviceCollection)

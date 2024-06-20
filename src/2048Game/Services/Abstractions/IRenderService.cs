@@ -6,6 +6,5 @@ public interface IRenderService
 {
     void RenderBoard(int[,] tiles, ScoreBoard scoreBoard, int boardSize);
     void RenderGameOver();
-    bool ConfirmAction(string message);
     void RenderWin();
 }

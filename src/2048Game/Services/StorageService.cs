@@ -22,9 +22,9 @@ public sealed class StorageService : IStorageService
         }
     }
 
-    public void SaveGame(int[,] tiles, ScoreBoard scoreBoard)
+    public void SaveGame(int[,] tiles, int boardSize, ScoreBoard scoreBoard)
     {
-        var gameSave = new GameSave(tiles, scoreBoard);
+        var gameSave = GameSave.Create(tiles, boardSize, scoreBoard);
         var saveData = JsonSerializer.Serialize(gameSave);
         File.WriteAllText(_saveFilePath, saveData);
     }
@@ -37,7 +37,7 @@ public sealed class StorageService : IStorageService
             gameSave = ReadJsonFile<GameSave>(_saveFilePath);
         }
 
-        return (gameSave?.Tiles, gameSave?.ScoreBoard);
+        return gameSave is null ? (null, null) : gameSave.ToRawTilesAndScoreBoard();
     }
 
     public void ResetGameSave()
@@ -55,15 +55,6 @@ public sealed class StorageService : IStorageService
 
     private static T? ReadJsonFile<T>(string path) where T : class
     {
-        // Move read logic to StorageService
         return JsonSerializer.Deserialize<T>(File.ReadAllText(path));
-    }
-
-    public record GameSave(int[,] Tiles, ScoreBoard ScoreBoard)
-    {
-        internal void ResetSave()
-        {
-            ScoreBoard.Reset();
-        }
     }
 }

@@ -2,6 +2,7 @@
 
 public interface IInputService
 {
-    void HandleInput();
+    void StartGameAndListenInput();
     ConsoleKey ListenKey();
+    bool ConfirmAction(string message);
 }

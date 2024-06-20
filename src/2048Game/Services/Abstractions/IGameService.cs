@@ -4,10 +4,10 @@ namespace _2048Game.Services.Abstractions;
 
 public interface IGameService
 {
+    bool Running { get; }
     void StartGame();
-    void ProcessStep(Direction direction);
-    void StartNewGame();
+    ProcessStepResult ProcessStep(Direction direction);
     void SaveGame();
-    void ProcessExit();
-    void ProcessRestart();
+    void StopGame();
+    void RestartGame();
 }

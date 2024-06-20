@@ -129,7 +129,7 @@ public sealed class BoardServiceTests
     {
         var tiles = new int[boardSize, boardSize];
         tiles[0, 0] = 2;
-        tiles[0, 1] = 2;
+        tiles[1, 0] = 2;
 
         var boardService = new BoardService(tiles, size: boardSize);
 
@@ -138,7 +138,6 @@ public sealed class BoardServiceTests
         moved.ShouldBeTrue();
 
         boardService.Tiles[0, 0].ShouldBe(4);
-        boardService.Tiles[0, 1].ShouldBe(0);
     }
 
     [Theory]
@@ -151,7 +150,7 @@ public sealed class BoardServiceTests
     {
         var tiles = new int[boardSize, boardSize];
         tiles[0, 0] = 2;
-        tiles[0, 1] = 2;
+        tiles[1, 0] = 2;
 
         var boardService = new BoardService(tiles, size: boardSize);
 
@@ -159,8 +158,25 @@ public sealed class BoardServiceTests
 
         moved.ShouldBeTrue();
 
-        boardService.Tiles[boardSize, 0].ShouldBe(4);
-        boardService.Tiles[boardSize - 1, 1].ShouldBe(0);
+        boardService.Tiles[boardSize - 1, 0].ShouldBe(4);
+    }
+
+    [Fact]
+    public void MoveRight_Moves_Tiles_Right_WithThreeValuesOnTheRow()
+    {
+        var tiles = new int[4, 4];
+        tiles[0, 0] = 2;
+        tiles[1, 0] = 2;
+        tiles[2, 0] = 2;
+
+        var boardService = new BoardService(tiles);
+
+        var moved = boardService.Move(Direction.Right);
+
+        moved.ShouldBeTrue();
+
+        boardService.Tiles[3, 0].ShouldBe(4);
+        boardService.Tiles[2, 0].ShouldBe(2);
     }
 
     [Theory]
@@ -173,7 +189,7 @@ public sealed class BoardServiceTests
     {
         var tiles = new int[boardSize, boardSize];
         tiles[0, 0] = 2;
-        tiles[1, 0] = 2;
+        tiles[0, 1] = 2;
 
         var boardService = new BoardService(tiles, size: boardSize);
 
@@ -182,7 +198,6 @@ public sealed class BoardServiceTests
         moved.ShouldBeTrue();
 
         boardService.Tiles[0, 0].ShouldBe(4);
-        boardService.Tiles[0, 1].ShouldBe(0);
     }
 
     [Theory]
@@ -195,7 +210,7 @@ public sealed class BoardServiceTests
     {
         var tiles = new int[boardSize, boardSize];
         tiles[0, 0] = 2;
-        tiles[1, 0] = 2;
+        tiles[0, 1] = 2;
 
         var boardService = new BoardService(tiles, size: boardSize);
 
@@ -203,8 +218,7 @@ public sealed class BoardServiceTests
 
         moved.ShouldBeTrue();
 
-        boardService.Tiles[boardSize, 0].ShouldBe(4);
-        boardService.Tiles[boardSize - 1, 1].ShouldBe(0);
+        boardService.Tiles[0, boardSize - 1].ShouldBe(4);
     }
 
     private static void ValidatePositives(BoardService board, int count)

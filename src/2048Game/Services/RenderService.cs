@@ -6,10 +6,7 @@ namespace _2048Game.Services;
 
 // Should not be called from anywhere. Should work independently.
 // Input -> Logic -> Render
-public sealed class RenderService(
-    IConsoleService consoleService,
-    IInputService inputService
-) : IRenderService
+public sealed class RenderService(IConsoleService consoleService) : IRenderService
 {
     private const int TileWidth = 7;
 
@@ -24,7 +21,7 @@ public sealed class RenderService(
         {
             for (var y = 0; y < boardSize; y++)
             {
-                var tileValue = tiles[x,y];
+                var tileValue = tiles[x, y];
                 PrintTileValue(tileValue);
             }
 
@@ -41,24 +38,6 @@ public sealed class RenderService(
     public void RenderWin()
     {
         consoleService.WriteLine("Congratulations! You've reached 2048!");
-    }
-
-    public bool ConfirmAction(string message)
-    {
-        consoleService.Write(message + " (Y/N)");
-
-        ConsoleKey key = default;
-        while (key is not (ConsoleKey.Y or ConsoleKey.N or ConsoleKey.Enter))
-        {
-            key = inputService.ListenKey();
-        }
-
-        // Clear the line
-        consoleService.SetCursorPosition(0, consoleService.CursorTop);
-        consoleService.Write(new string(' ', consoleService.WindowWidth));
-        consoleService.SetCursorPosition(0, consoleService.CursorTop);
-
-        return key is ConsoleKey.Y or ConsoleKey.Enter;
     }
 
     private void PrintTileValue(int tileValue)
