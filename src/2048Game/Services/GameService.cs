@@ -1,82 +1,71 @@
 ﻿using _2048Game.Core;
-using _2048Game.Core.Exceptions;
-using _2048Game.Models;
-using _2048Game.Models.Abstractions;
 using _2048Game.Services.Abstractions;
 
 namespace _2048Game.Services;
 
 public sealed class GameService(
-    IBoard board,
-    ScoreBoard scoreBoard,
-    ITileControlService tileControlService,
+    IBoardService boardService,
     IStorageService storageService,
     IRenderService renderService
 ) : IGameService
 {
+    public bool Running { get; private set; }
+
     public void StartGame()
     {
-        renderService.RenderBoard();
+        Running = true;
+        RenderBoard();
     }
 
-    public void ProcessStep(Direction? direction)
+    public ProcessStepResult ProcessStep(Direction direction)
     {
-        var moved = false;
+        var moved = boardService.Move(direction);
 
-        if (direction.HasValue)
-        {
-            moved = tileControlService.Move(direction.Value);
-        }
+        SaveGame();
 
         switch (moved)
         {
             case true: // Process regular move
-                HandleMove();
-                break;
+                if (boardService.HasWon())
+                {
+                    renderService.RenderWin();
+                    return ProcessStepResult.Win;
+                }
 
-            case false when !board.CanMove(): // Game Over
+                RenderBoard();
+                return ProcessStepResult.RegularMove;
+
+            case false when !boardService.CanMove(): // Game Over
             {
-                HandleGameOver();
-                break;
-            }
-        }
-
-        renderService.RenderBoard();
-
-        return;
-
-        void HandleMove()
-        {
-            board.AddRandomTile();
-            scoreBoard.AddScore(tileControlService.MergeScore);
-            SaveGame();
-        }
-
-        void HandleGameOver()
-        {
-            renderService.RenderGameOver();
-            if (renderService.ConfirmAction("Start a new game?"))
-            {
-                StartNewGame();
-                return;
+                renderService.RenderGameOver();
+                return ProcessStepResult.GameOver;
             }
 
-            // Save empty board and score before exit
-            storageService.ResetGameSave();
-            throw new GameExitException();
+            default:
+                return ProcessStepResult.RegularMove;
         }
-    }
-
-    public void StartNewGame()
-    {
-        board.Reset();
-        scoreBoard.Reset();
-        renderService.RenderBoard();
-        SaveGame();
     }
 
     public void SaveGame()
     {
-        storageService.SaveGame(board, scoreBoard);
+        storageService.SaveGame(boardService.Tiles, boardService.BoardSize, boardService.ScoreBoard);
+    }
+
+    public void StopGame()
+    {
+        SaveGame();
+        Running = false;
+    }
+
+    public void RestartGame()
+    {
+        boardService.Reset();
+        RenderBoard();
+        SaveGame();
+    }
+
+    private void RenderBoard()
+    {
+        renderService.RenderBoard(boardService.Tiles, boardService.ScoreBoard, boardService.BoardSize);
     }
 }

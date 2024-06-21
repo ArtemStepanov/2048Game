@@ -1,6 +1,7 @@
 
 # 2048 Game
 
+![GitHub Release](https://img.shields.io/github/v/release/ArtemStepanov/2048Game)
 [![codecov](https://codecov.io/github/ArtemStepanov/2048Game/graph/badge.svg?token=SD342CTD6X)](https://codecov.io/github/ArtemStepanov/2048Game)
 [![Build and Test](https://github.com/ArtemStepanov/2048Game/actions/workflows/dotnet-ci.yml/badge.svg)](https://github.com/ArtemStepanov/2048Game/actions/workflows/dotnet-ci.yml)
 [![pages-build-deployment](https://github.com/ArtemStepanov/2048Game/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/ArtemStepanov/2048Game/actions/workflows/pages/pages-build-deployment)
