@@ -7,7 +7,7 @@ namespace _2048Game.Services;
 public sealed class BoardService : IBoardService
 {
     private readonly Random _random = new();
-    private List<(int, int)> _emptyTiles = [];
+    private readonly List<(int, int)> _emptyCells = [];
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     public BoardService(int[][]? tiles = null, ScoreBoard? scoreBoard = null, int size = 4)
@@ -26,16 +26,17 @@ public sealed class BoardService : IBoardService
     private bool IsLoadedFromSave { get; }
     private int MergeScore { get; set; }
 
+    // todo: починить скоринг
     public void AddRandomTile()
     {
-        if (_emptyTiles.Count == 0)
+        RecalculateEmptyTiles();
+        if (_emptyCells.Count == 0)
         {
             return;
         }
 
-        var (x, y) = _emptyTiles[_random.Next(_emptyTiles.Count)];
-        Tiles[x][y] = _random.NextDouble() < 0.9 ? 2 : 4;
-        _emptyTiles.Remove((y, x));
+        var (row, column) = _emptyCells[_random.Next(_emptyCells.Count)];
+        Tiles[row][column] = _random.NextDouble() < 0.9 ? 2 : 4;
     }
 
     public void Reset(int boardSize)
@@ -62,8 +63,6 @@ public sealed class BoardService : IBoardService
             AddRandomTile();
         }
 
-        RecalculateEmptyTiles();
-
         return moved;
     }
 
@@ -81,41 +80,6 @@ public sealed class BoardService : IBoardService
         }
 
         return false;
-
-        bool CheckTiles(int x, int y)
-        {
-            // Check empty tile
-            if (Tiles[x][y] == 0)
-            {
-                return true;
-            }
-
-            // Left
-            if (x > 0 && Tiles[x][y] == Tiles[x - 1][y])
-            {
-                return true;
-            }
-
-            // Up
-            if (y > 0 && Tiles[x][y] == Tiles[x][y - 1])
-            {
-                return true;
-            }
-
-            // Right
-            if (x < BoardSize - 1 && Tiles[x][y] == Tiles[x + 1][y])
-            {
-                return true;
-            }
-
-            // Down
-            if (y < BoardSize - 1 && Tiles[x][y] == Tiles[x][y + 1])
-            {
-                return true;
-            }
-
-            return false;
-        }
     }
 
     public bool HasWon()
@@ -155,7 +119,7 @@ public sealed class BoardService : IBoardService
             for (var j = 0; j < BoardSize; j++)
             {
                 tmpTiles[i][j] = 0;
-                _emptyTiles.Add((i, j));
+                _emptyCells.Add((i, j));
             }
         }
 
@@ -163,7 +127,6 @@ public sealed class BoardService : IBoardService
 
         AddRandomTile();
         AddRandomTile();
-        RecalculateEmptyTiles();
     }
 
     private bool CoverUp()
@@ -180,22 +143,31 @@ public sealed class BoardService : IBoardService
             var count = 0;
             for (var j = 0; j < BoardSize; j++)
             {
-                if (Tiles[i][j] != 0)
-                {
-                    newMatrix[i][count] = Tiles[i][j];
-                    if (j != count)
-                    {
-                        done = true;
-                    }
-
-                    count++;
-                }
+                count = CalculateMatrix(i, j, count);
             }
         }
 
         Tiles = newMatrix;
 
         return done;
+
+        int CalculateMatrix(int i, int j, int count)
+        {
+            if (Tiles[i][j] == 0)
+            {
+                return count;
+            }
+
+            newMatrix[i][count] = Tiles[i][j];
+            if (j != count)
+            {
+                done = true;
+            }
+
+            count++;
+
+            return count;
+        }
     }
 
     private bool Merge(bool done)
@@ -285,16 +257,51 @@ public sealed class BoardService : IBoardService
 
     private void RecalculateEmptyTiles()
     {
-        _emptyTiles.Clear();
-        for (var x = 0; x < BoardSize; x++)
+        _emptyCells.Clear();
+        for (var row = 0; row < BoardSize; row++)
         {
-            for (var y = 0; y < BoardSize; y++)
+            for (var column = 0; column < BoardSize; column++)
             {
-                if (Tiles[y][x] == 0)
+                if (Tiles[row][column] == 0)
                 {
-                    _emptyTiles.Add((x, y));
+                    _emptyCells.Add((row, column));
                 }
             }
         }
+    }
+
+    private bool CheckTiles(int x, int y)
+    {
+        // Check empty tile
+        if (Tiles[x][y] == 0)
+        {
+            return true;
+        }
+
+        // Left
+        if (x > 0 && Tiles[x][y] == Tiles[x - 1][y])
+        {
+            return true;
+        }
+
+        // Up
+        if (y > 0 && Tiles[x][y] == Tiles[x][y - 1])
+        {
+            return true;
+        }
+
+        // Right
+        if (x < BoardSize - 1 && Tiles[x][y] == Tiles[x + 1][y])
+        {
+            return true;
+        }
+
+        // Down
+        if (y < BoardSize - 1 && Tiles[x][y] == Tiles[x][y + 1])
+        {
+            return true;
+        }
+
+        return false;
     }
 }

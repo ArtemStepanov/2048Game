@@ -5,7 +5,6 @@ namespace _2048Game.Services;
 
 public sealed class InputService(IGameService gameService, IConsoleService consoleService) : IInputService
 {
-
     public void StartGameAndListenInput()
     {
         gameService.StartGame();
@@ -18,35 +17,15 @@ public sealed class InputService(IGameService gameService, IConsoleService conso
                 case ConsoleKey.DownArrow:
                 case ConsoleKey.RightArrow:
                 case ConsoleKey.LeftArrow:
-                    var result = gameService.ProcessStep(Mapping.KeyToDirection[input]);
-                    if (result is ProcessStepResult.GameOver && !ConfirmAction("Start a new game?"))
-                    {
-                        gameService.StopGame();
-                        return;
-                    }
-
-                    if (result is ProcessStepResult.Win && !ConfirmAction("Continue playing?"))
-                    {
-                        gameService.StopGame();
-                        return;
-                    }
-
+                    ProcessMove(input, gameService);
                     break;
 
                 case ConsoleKey.R:
-                    if (ConfirmAction("Restart game?"))
-                    {
-                        gameService.RestartGame();
-                    }
-
+                    ProcessRestart();
                     break;
 
                 case ConsoleKey.Q:
-                    if (ConfirmAction("Quit game?"))
-                    {
-                        gameService.StopGame();
-                    }
-
+                    ProcessQuit();
                     break;
 
                 default:
@@ -77,5 +56,36 @@ public sealed class InputService(IGameService gameService, IConsoleService conso
         consoleService.SetCursorPosition(0, consoleService.CursorTop);
 
         return key is ConsoleKey.Y or ConsoleKey.Enter;
+    }
+
+    private void ProcessMove(ConsoleKey input, IGameService gameService)
+    {
+        var result = gameService.ProcessStep(Mapping.KeyToDirection[input]);
+        switch (result)
+        {
+            // todo: починить сообщение гейм овер
+            case ProcessStepResult.GameOver when !ConfirmAction("Start a new game?"):
+                gameService.StopGame();
+                return;
+            case ProcessStepResult.Win when !ConfirmAction("Continue playing?"):
+                gameService.StopGame();
+                return;
+        }
+    }
+
+    private void ProcessQuit()
+    {
+        if (ConfirmAction("Quit game?"))
+        {
+            gameService.StopGame();
+        }
+    }
+
+    private void ProcessRestart()
+    {
+        if (ConfirmAction("Restart game?"))
+        {
+            gameService.RestartGame();
+        }
     }
 }
