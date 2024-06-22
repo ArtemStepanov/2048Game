@@ -1,4 +1,3 @@
-﻿global using _2048Game.Tests.Helpers;
-global using Moq;
-global using Xunit;
+﻿global using Moq;
 global using Shouldly;
+global using Xunit;

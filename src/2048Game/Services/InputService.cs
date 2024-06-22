@@ -1,57 +1,96 @@
 ﻿using _2048Game.Core;
-using _2048Game.Core.Exceptions;
 using _2048Game.Services.Abstractions;
 
 namespace _2048Game.Services;
 
-public sealed class InputService(IGameService gameService, IRenderService renderService, IConsoleService consoleService)
+public sealed class InputService(IGameService gameService, IConsoleService consoleService) : IInputService
 {
-    public bool HandleInput()
+    public void StartGameAndListenInput()
     {
-        try
+        gameService.StartGame();
+        while (gameService.Running)
         {
-            var input = consoleService.ReadKey(true).Key;
-            HandleInput(input);
-            return true;
-        }
-        catch (GameExitException)
-        {
-            consoleService.WriteLine("Goodbye!");
-            return false;
+            var input = ListenKey();
+            switch (input)
+            {
+                case ConsoleKey.UpArrow:
+                case ConsoleKey.DownArrow:
+                case ConsoleKey.RightArrow:
+                case ConsoleKey.LeftArrow:
+                    ProcessMove(input);
+                    break;
+
+                case ConsoleKey.R:
+                    ProcessRestart();
+                    break;
+
+                case ConsoleKey.Q:
+                    ProcessQuit();
+                    break;
+
+                default:
+                    consoleService.WriteLine("Invalid input. Use arrow keys to move, R to restart, Q to quit.");
+                    break;
+            }
         }
     }
 
-    private void HandleInput(ConsoleKey input)
+    public ConsoleKey ListenKey()
     {
-        switch (input)
+        return consoleService.ReadKey(true).Key;
+    }
+
+    public bool ConfirmAction(string message)
+    {
+        consoleService.Write(message + " (Y/N)");
+
+        ConsoleKey key = default;
+        while (key is not (ConsoleKey.Y or ConsoleKey.N or ConsoleKey.Enter))
         {
-            case ConsoleKey.UpArrow:
-            case ConsoleKey.DownArrow:
-            case ConsoleKey.RightArrow:
-            case ConsoleKey.LeftArrow:
-                gameService.ProcessStep(Mapping.KeyToDirection[input]);
-                break;
+            key = ListenKey();
+        }
 
-            case ConsoleKey.R:
-                if (renderService.ConfirmAction("Restart game?"))
-                {
-                    gameService.StartNewGame();
-                }
+        // Clear the line
+        consoleService.SetCursorPosition(0, consoleService.CursorTop);
+        consoleService.Write(new string(' ', consoleService.WindowWidth));
+        consoleService.SetCursorPosition(0, consoleService.CursorTop);
 
-                break;
+        return key is ConsoleKey.Y or ConsoleKey.Enter;
+    }
 
-            case ConsoleKey.Q:
-                if (renderService.ConfirmAction("Quit game?"))
-                {
-                    gameService.SaveGame();
-                    throw new GameExitException();
-                }
+    private void ProcessMove(ConsoleKey input)
+    {
+        var result = gameService.ProcessStep(Mapping.KeyToDirection[input]);
+        if (result is ProcessStepResult.GameOver)
+        {
+            if (!ConfirmAction("Start a new game?"))
+            {
+                gameService.StopGame();
+                return;
+            }
 
-                break;
+            gameService.RestartGame();
+        }
 
-            default:
-                consoleService.WriteLine("Invalid input. Use arrow keys to move, R to restart, Q to quit.");
-                break;
+        if (result is ProcessStepResult.Win && !ConfirmAction("Continue playing?"))
+        {
+            gameService.StopGame();
+        }
+    }
+
+    private void ProcessQuit()
+    {
+        if (ConfirmAction("Quit game?"))
+        {
+            gameService.StopGame();
+        }
+    }
+
+    private void ProcessRestart()
+    {
+        if (ConfirmAction("Restart game?"))
+        {
+            gameService.RestartGame();
         }
     }
 }
