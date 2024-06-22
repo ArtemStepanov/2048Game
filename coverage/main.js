@@ -221,17 +221,14 @@ var assemblies = [
   {
     "name": "2048Game",
     "classes": [
-      { "name": "_2048Game.Core.Exceptions.GameExitException", "rp": "2048Game_GameExitException.html", "cl": 1, "ucl": 0, "cal": 1, "tl": 3, "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
-      { "name": "_2048Game.Core.Extensions.StringExtensions", "rp": "2048Game_StringExtensions.html", "cl": 1, "ucl": 0, "cal": 1, "tl": 11, "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
       { "name": "_2048Game.Core.Mapping", "rp": "2048Game_Mapping.html", "cl": 38, "ucl": 0, "cal": 38, "tl": 47, "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
-      { "name": "_2048Game.Models.Board", "rp": "2048Game_Board.html", "cl": 31, "ucl": 0, "cal": 31, "tl": 79, "cb": 19, "tb": 22, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
-      { "name": "_2048Game.Models.ScoreBoard", "rp": "2048Game_ScoreBoard.html", "cl": 8, "ucl": 0, "cal": 8, "tl": 21, "cb": 2, "tb": 2, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
-      { "name": "_2048Game.Models.Tile", "rp": "2048Game_Tile.html", "cl": 6, "ucl": 0, "cal": 6, "tl": 19, "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
-      { "name": "_2048Game.Services.GameService", "rp": "2048Game_GameService.html", "cl": 36, "ucl": 0, "cal": 36, "tl": 82, "cb": 8, "tb": 8, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
-      { "name": "_2048Game.Services.InputService", "rp": "2048Game_InputService.html", "cl": 18, "ucl": 0, "cal": 18, "tl": 57, "cb": 10, "tb": 10, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
-      { "name": "_2048Game.Services.RenderService", "rp": "2048Game_RenderService.html", "cl": 33, "ucl": 0, "cal": 33, "tl": 71, "cb": 21, "tb": 22, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
-      { "name": "_2048Game.Services.StorageService", "rp": "2048Game_StorageService.html", "cl": 29, "ucl": 0, "cal": 29, "tl": 72, "cb": 12, "tb": 12, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
-      { "name": "_2048Game.Services.TileControlService", "rp": "2048Game_TileControlService.html", "cl": 39, "ucl": 2, "cal": 41, "tl": 93, "cb": 19, "tb": 21, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
+      { "name": "_2048Game.Models.GameSave", "rp": "2048Game_GameSave.html", "cl": 14, "ucl": 0, "cal": 14, "tl": 38, "cb": 8, "tb": 8, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
+      { "name": "_2048Game.Models.ScoreBoard", "rp": "2048Game_ScoreBoard.html", "cl": 28, "ucl": 1, "cal": 29, "tl": 81, "cb": 15, "tb": 16, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
+      { "name": "_2048Game.Services.BoardService", "rp": "2048Game_BoardService.html", "cl": 126, "ucl": 11, "cal": 137, "tl": 306, "cb": 79, "tb": 91, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
+      { "name": "_2048Game.Services.GameService", "rp": "2048Game_GameService.html", "cl": 24, "ucl": 7, "cal": 31, "tl": 71, "cb": 4, "tb": 6, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
+      { "name": "_2048Game.Services.InputService", "rp": "2048Game_InputService.html", "cl": 31, "ucl": 5, "cal": 36, "tl": 96, "cb": 27, "tb": 32, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
+      { "name": "_2048Game.Services.RenderService", "rp": "2048Game_RenderService.html", "cl": 25, "ucl": 2, "cal": 27, "tl": 60, "cb": 7, "tb": 8, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
+      { "name": "_2048Game.Services.StorageService", "rp": "2048Game_StorageService.html", "cl": 22, "ucl": 1, "cal": 23, "tl": 60, "cb": 8, "tb": 10, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
     ]},
 ];
 
@@ -240,9 +237,29 @@ var metrics = [{ "name": "Crap Score", "abbreviation": "crp", "explanationUrl": 
 var historicCoverageExecutionTimes = [];
 
 var riskHotspotMetrics = [
+      { "name": "Crap Score", "explanationUrl": "https://googletesting.blogspot.de/2011/02/this-code-is-crap.html" },
+      { "name": "Cyclomatic complexity", "explanationUrl": "https://en.wikipedia.org/wiki/Cyclomatic_complexity" },
 ];
 
 var riskHotspots = [
+  {
+    "assembly": "2048Game", "class": "_2048Game.Services.BoardService", "reportPath": "2048Game_BoardService.html", "methodName": "HasWon()", "methodShortName": "HasWon()", "fileIndex": 0, "line": 86,
+    "metrics": [
+      { "value": 42, "exceeded": true },
+      { "value": 6, "exceeded": false },
+    ]},
+  {
+    "assembly": "2048Game", "class": "_2048Game.Services.BoardService", "reportPath": "2048Game_BoardService.html", "methodName": "CheckTiles(System.Int32,System.Int32)", "methodShortName": "CheckTiles(...)", "fileIndex": 0, "line": 275,
+    "metrics": [
+      { "value": 33.59, "exceeded": true },
+      { "value": 18, "exceeded": false },
+    ]},
+  {
+    "assembly": "2048Game", "class": "_2048Game.Services.InputService", "reportPath": "2048Game_InputService.html", "methodName": "ProcessMove(System.ConsoleKey)", "methodShortName": "ProcessMove(...)", "fileIndex": 0, "line": 63,
+    "metrics": [
+      { "value": 18.98, "exceeded": true },
+      { "value": 8, "exceeded": false },
+    ]},
 ];
 
 var branchCoverageAvailable = true;
