@@ -49,7 +49,10 @@ public sealed class StorageServiceTests : IDisposable
     [Fact]
     public void LoadGame_Loads_Saved_Files()
     {
-        var board = new BoardService(scoreBoard: new ScoreBoard { Score = 100, BestScore = 200 });
+        var scoreBoard = new ScoreBoard();
+        scoreBoard.ForceOverrideScore(100);
+        scoreBoard.ForceOverrideScore(200);
+        var board = new BoardService(scoreBoard: scoreBoard);
 
         _storageService.SaveGame(board.Tiles, board.BoardSize, board.ScoreBoard);
 
@@ -66,7 +69,9 @@ public sealed class StorageServiceTests : IDisposable
     [Fact]
     public void ResetGameSave_Resets_Save_File()
     {
-        var scoreBoard = new ScoreBoard { Score = 100, BestScore = 200 };
+        var scoreBoard = new ScoreBoard();
+        scoreBoard.ForceOverrideScore(100);
+        scoreBoard.ForceOverrideScore(200);
 
         _storageService.SaveGame(_dummyCollection, 4, scoreBoard);
         _storageService.ResetGameSave();

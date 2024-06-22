@@ -26,7 +26,6 @@ public sealed class BoardService : IBoardService
     private bool IsLoadedFromSave { get; }
     private int MergeScore { get; set; }
 
-    // todo: починить скоринг
     public void AddRandomTile()
     {
         RecalculateEmptyTiles();
@@ -46,7 +45,6 @@ public sealed class BoardService : IBoardService
         Initialize(true);
     }
 
-    // TODO: There are still issues with moving. Sometimes tiles disappear, sometimes they moved weirdly.
     public bool Move(Direction direction)
     {
         var moved = direction switch
@@ -60,6 +58,7 @@ public sealed class BoardService : IBoardService
 
         if (moved)
         {
+            ScoreBoard.AddScore(MergeScore);
             AddRandomTile();
         }
 

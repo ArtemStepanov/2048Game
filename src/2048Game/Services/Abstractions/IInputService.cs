@@ -3,6 +3,4 @@
 public interface IInputService
 {
     void StartGameAndListenInput();
-    ConsoleKey ListenKey();
-    bool ConfirmAction(string message);
 }

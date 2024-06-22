@@ -11,12 +11,10 @@ public sealed class InputServiceTests
     private readonly InputService _inputService;
     private readonly Mock<IConsoleService> _mockConsoleService;
     private readonly Mock<IGameService> _mockGameService;
-    private readonly Mock<IRenderService> _mockRenderService;
 
     public InputServiceTests()
     {
         _mockGameService = new Mock<IGameService>();
-        _mockRenderService = new Mock<IRenderService>();
         _mockConsoleService = new Mock<IConsoleService>();
         _inputService = new InputService(_mockGameService.Object, _mockConsoleService.Object);
         _stringBuilder = new StringBuilder();

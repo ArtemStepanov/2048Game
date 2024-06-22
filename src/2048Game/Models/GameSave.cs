@@ -23,6 +23,7 @@ public record GameSave(List<GameSave.Tile> Tiles, ScoreBoard ScoreBoard, int Boa
         var tiles = new int[BoardSize][];
         foreach (var tile in Tiles)
         {
+            // ReSharper disable once NullCoalescingConditionIsAlwaysNotNullAccordingToAPIContract
             tiles[tile.Row] ??= new int[BoardSize];
             tiles[tile.Row][tile.Column] = tile.Value;
         }

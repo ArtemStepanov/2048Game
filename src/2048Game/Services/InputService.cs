@@ -17,7 +17,7 @@ public sealed class InputService(IGameService gameService, IConsoleService conso
                 case ConsoleKey.DownArrow:
                 case ConsoleKey.RightArrow:
                 case ConsoleKey.LeftArrow:
-                    ProcessMove(input, gameService);
+                    ProcessMove(input);
                     break;
 
                 case ConsoleKey.R:
@@ -58,18 +58,23 @@ public sealed class InputService(IGameService gameService, IConsoleService conso
         return key is ConsoleKey.Y or ConsoleKey.Enter;
     }
 
-    private void ProcessMove(ConsoleKey input, IGameService gameService)
+    private void ProcessMove(ConsoleKey input)
     {
         var result = gameService.ProcessStep(Mapping.KeyToDirection[input]);
-        switch (result)
+        if (result is ProcessStepResult.GameOver)
         {
-            // todo: починить сообщение гейм овер
-            case ProcessStepResult.GameOver when !ConfirmAction("Start a new game?"):
+            if (!ConfirmAction("Start a new game?"))
+            {
                 gameService.StopGame();
                 return;
-            case ProcessStepResult.Win when !ConfirmAction("Continue playing?"):
-                gameService.StopGame();
-                return;
+            }
+
+            gameService.RestartGame();
+        }
+
+        if (result is ProcessStepResult.Win && !ConfirmAction("Continue playing?"))
+        {
+            gameService.StopGame();
         }
     }
 
