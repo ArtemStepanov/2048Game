@@ -9,6 +9,7 @@ namespace _2048Game.Services;
 public sealed class RenderService(IConsoleService consoleService) : IRenderService
 {
     private const int TileWidth = 7;
+    private readonly string _emptyTile = "|" + new string(' ', TileWidth - 1);
 
     public void RenderBoard(int[][] tiles, ScoreBoard scoreBoard, int boardSize)
     {
@@ -44,7 +45,7 @@ public sealed class RenderService(IConsoleService consoleService) : IRenderServi
     {
         if (tileValue == 0)
         {
-            consoleService.Write("|" + new string(' ', TileWidth - 1));
+            consoleService.Write(_emptyTile);
             return;
         }
 
